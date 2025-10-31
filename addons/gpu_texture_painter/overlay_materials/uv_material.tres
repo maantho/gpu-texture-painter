@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bdnbf5ol6km4a"]
+
+[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/uv_shader.gdshader" id="1_d8jc8"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_d8jc8")

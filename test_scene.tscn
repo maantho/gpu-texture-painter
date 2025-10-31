@@ -1,37 +1,35 @@
-[gd_scene load_steps=6 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene load_steps=7 format=3 uid="uid://gf5fmdn7810t"]
 
+[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/uv_shader.gdshader" id="1_ia1lp"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/texture_manager.gd" id="1_uhqqe"]
-[ext_resource type="Material" uid="uid://bdnbf5ol6km4a" path="res://addons/gpu_texture_painter/overlay_materials/uv_material.tres" id="2_ia1lp"]
 
-[sub_resource type="TorusMesh" id="TorusMesh_ia1lp"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_sasra"]
-lightmap_size_hint = Vector2i(14, 21)
-add_uv2 = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ia1lp"]
+render_priority = 0
+shader = ExtResource("1_ia1lp")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_coq8p"]
 lightmap_size_hint = Vector2i(12, 12)
 add_uv2 = true
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sasra"]
+render_priority = 0
+shader = ExtResource("1_ia1lp")
+
+[sub_resource type="BoxMesh" id="BoxMesh_sasra"]
+lightmap_size_hint = Vector2i(14, 21)
+add_uv2 = true
+
 [node name="Node3D" type="Node3D"]
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.7709012)
-mesh = SubResource("TorusMesh_ia1lp")
-skeleton = NodePath("TextureManager")
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.51345557, 0)
+material_overlay = SubResource("ShaderMaterial_ia1lp")
+mesh = SubResource("PlaneMesh_coq8p")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.7709012)
-material_overlay = ExtResource("2_ia1lp")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_overlay = SubResource("ShaderMaterial_sasra")
 mesh = SubResource("BoxMesh_sasra")
-skeleton = NodePath("../..")
 
-[node name="TextureManager" type="Node" parent="MeshInstance3D3"]
+[node name="TextureManager" type="Node" parent="."]
 script = ExtResource("1_uhqqe")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D3/TextureManager"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.51345557, 0)
-material_overlay = ExtResource("2_ia1lp")
-mesh = SubResource("PlaneMesh_coq8p")
-skeleton = NodePath("../../..")

@@ -1,26 +1,10 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bdnbf5ol6km4a"]
 
-[sub_resource type="Shader" id="Shader_uhqqe"]
-code = "shader_type spatial;
-
-uniform sampler2D overlay_texture : hint_default_transparent;
-
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
-
-void fragment() {
-	ALBEDO = vec3(UV2.xy, 0); 
-	ALPHA = texture(overlay_texture, UV2.xy).a;
-}
-
-//void light() {
-//	// Called for every pixel for every light affecting the material.
-//	// Uncomment to replace the default light processing function with this one.
-//}
-"
+[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/uv_shader.gdshader" id="1_d8jc8"]
 
 [resource]
 resource_local_to_scene = true
 render_priority = 0
-shader = SubResource("Shader_uhqqe")
+shader = ExtResource("1_d8jc8")
+shader_parameter/position_in_atlas = Vector2(0, 0)
+shader_parameter/size_in_atlas = Vector2(0, 0)

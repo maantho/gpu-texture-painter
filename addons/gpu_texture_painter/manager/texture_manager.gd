@@ -30,9 +30,17 @@ func _exit_tree() -> void:
 func _apply_materials() -> void:
 	var mesh_instances :=  _get_child_mesh_instances(get_parent())
 
+	var rects: Array[Vector2] = []
+	for mesh_instance in mesh_instances:
+		rects.push_back(Vector2(mesh_instance.mesh.lightmap_size_hint))
+
+	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
+
 	for mesh_instance in mesh_instances:
 		mesh_instance.material_overlay = overlay_material.duplicate()
 		mesh_instance.material_overlay.set_shader_parameter("overlay_texture", overlay_texture_resource)
+		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[mesh_instances.find(mesh_instance)].position)
+		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[mesh_instances.find(mesh_instance)].size)
 		print("set material")
 
 

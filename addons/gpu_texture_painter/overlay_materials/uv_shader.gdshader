@@ -10,9 +10,14 @@ void vertex() {
 }
 
 void fragment() {
+	//if cull mask layer 21 is enabled, the camera acts as a brush
+	bool brush = (CAMERA_VISIBLE_LAYERS & (1u << uint(20))) != 0u;
+
 	vec2 atlas_uv = UV2 * size_in_atlas + position_in_atlas;
-	ALBEDO = vec3(atlas_uv, 0); 
-	ALPHA = texture(overlay_texture, atlas_uv).a;
+	ALBEDO = vec3(atlas_uv, 0);
+	if(!brush){
+		ALPHA = texture(overlay_texture, atlas_uv).a;
+	}
 }
 
 //void light() {

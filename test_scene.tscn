@@ -2,10 +2,12 @@
 
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/uv_shader.gdshader" id="1_ia1lp"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/texture_manager.gd" id="1_uhqqe"]
+[ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="3_sasra"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_uhqqe"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ia1lp"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_ia1lp")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_uhqqe")
@@ -17,6 +19,7 @@ lightmap_size_hint = Vector2i(12, 12)
 add_uv2 = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sasra"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_ia1lp")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_uhqqe")
@@ -26,12 +29,6 @@ shader_parameter/size_in_atlas = Vector2(0.53846157, 0.8076923)
 [sub_resource type="BoxMesh" id="BoxMesh_sasra"]
 lightmap_size_hint = Vector2i(14, 21)
 add_uv2 = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
-render_priority = 0
-shader = ExtResource("1_ia1lp")
-shader_parameter/position_in_atlas = Vector2(0, 0)
-shader_parameter/size_in_atlas = Vector2(0, 0)
 
 [node name="Node3D" type="Node3D"]
 
@@ -47,9 +44,20 @@ mesh = SubResource("BoxMesh_sasra")
 
 [node name="TextureManager" type="Node" parent="."]
 script = ExtResource("1_uhqqe")
-overlay_material = SubResource("ShaderMaterial_coq8p")
 overlay_texture_resource = SubResource("Texture2DRD_uhqqe")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 use_hdr_2d = true
+size = Vector2i(3052, 1942)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.5892669, 0.80793846, 0, -0.80793846, 0.5892669, 0, 1.578047, 4.464621)
+projection = 2
+fov = 22.0
+
+[node name="CameraBrush" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7709136, 0.63693976, 0, -0.63693976, 0.7709136, -4.8225965, 1.2547336, 0.19277143)
+script = ExtResource("3_sasra")
+bleed = null
+metadata/_custom_type_script = "uid://bq5yvj1llh63a"

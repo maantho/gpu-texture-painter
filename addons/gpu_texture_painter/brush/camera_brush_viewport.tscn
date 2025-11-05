@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://be0n8acdsbi8p"]
+
+[node name="CameraBrushViewport" type="SubViewport"]
+use_hdr_2d = true
+
+[node name="Camera3D" type="Camera3D" parent="."]

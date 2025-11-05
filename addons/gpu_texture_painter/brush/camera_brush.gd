@@ -4,9 +4,13 @@ extends Node3D
 
 var viewport: SubViewport
 var camera: Camera3D
+var camera_brush_compute_helper: CameraBrushComputeHelper
 var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 
-@export var texture_manager: TextureManager
+@export var texture_manager: TextureManager:
+	set(value):
+		texture_manager = value
+		_create_compute_helper()
 
 @export var projection: Camera3D.ProjectionType = Camera3D.ProjectionType.PROJECTION_PERSPECTIVE:
 	set(value):
@@ -15,13 +19,13 @@ var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 		if camera:
 			camera.projection = projection
 
-@export var fov: float = 70.0:
+@export var fov: float = 5.0:
 	set(value):
 		fov = value
 		if camera:
 			camera.fov = fov
 
-@export var size: float = 10.0:
+@export var size: float = 0.5:
 	set(value):
 		size = value
 		if camera:
@@ -48,6 +52,8 @@ var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 		if viewport:
 			viewport.size = resolution
 
+@export var drawing: bool = true
+
 func _ready() -> void:
 	viewport = camera_brush_scene.instantiate() as SubViewport
 	if not viewport:
@@ -61,7 +67,7 @@ func _ready() -> void:
 		push_error("Failed to get camera from camera brush viewport scene.")
 		return
 
-	camera.cull_mask += 1 << 20  # Set layer 21 to detect brush render
+	camera.cull_mask += int(1) << int(20)  # Set layer 21 to detect brush render
 
 	camera.projection = projection
 	camera.fov = fov
@@ -71,9 +77,20 @@ func _ready() -> void:
 	viewport.size = resolution
 
 
+func _create_compute_helper() -> void:
+	var viewport_texture_rid = viewport.get_texture().get_rid()
+	if not viewport_texture_rid.is_valid():
+		push_error("Viewport texture RID is invalid")
+		return
+
+	camera_brush_compute_helper = CameraBrushComputeHelper.new(RenderingServer.texture_get_rd_texture(viewport_texture_rid), texture_manager.overlay_texture_rid)
+
 func _process(delta: float) -> void:
 	camera.global_position = global_position
 	camera.global_rotation = global_rotation
+
+	if camera_brush_compute_helper && drawing:
+		RenderingServer.call_on_render_thread(camera_brush_compute_helper.render_process)
 
 
 func _validate_property(property: Dictionary) -> void:

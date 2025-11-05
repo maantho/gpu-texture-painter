@@ -4,60 +4,62 @@
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/texture_manager.gd" id="1_uhqqe"]
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="3_sasra"]
 
-[sub_resource type="Texture2DRD" id="Texture2DRD_uhqqe"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ia1lp"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("1_ia1lp")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_uhqqe")
-shader_parameter/position_in_atlas = Vector2(0, 0)
-shader_parameter/size_in_atlas = Vector2(0.46153846, 0.46153846)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_coq8p"]
-lightmap_size_hint = Vector2i(12, 12)
-add_uv2 = true
+[sub_resource type="Texture2DRD" id="Texture2DRD_ia1lp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sasra"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_ia1lp")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_uhqqe")
-shader_parameter/position_in_atlas = Vector2(0.46153846, 0)
-shader_parameter/size_in_atlas = Vector2(0.53846157, 0.8076923)
+shader_parameter/overlay_texture = SubResource("Texture2DRD_ia1lp")
+shader_parameter/position_in_atlas = Vector2(0, 0)
+shader_parameter/size_in_atlas = Vector2(0.7209302, 0.7906977)
 
-[sub_resource type="BoxMesh" id="BoxMesh_sasra"]
-lightmap_size_hint = Vector2i(14, 21)
+[sub_resource type="PlaneMesh" id="PlaneMesh_coq8p"]
+lightmap_size_hint = Vector2i(31, 34)
+add_uv2 = true
+size = Vector2(5.84, 6.44)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_ia1lp")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_ia1lp")
+shader_parameter/position_in_atlas = Vector2(0.7209302, 0)
+shader_parameter/size_in_atlas = Vector2(0.27906978, 0.27906978)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_2nij2"]
+lightmap_size_hint = Vector2i(12, 12)
 add_uv2 = true
 
 [node name="Node3D" type="Node3D"]
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.51345557, 0)
-material_overlay = SubResource("ShaderMaterial_ia1lp")
-mesh = SubResource("PlaneMesh_coq8p")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6380866, 0, -0.95154)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12852621, 0)
 material_overlay = SubResource("ShaderMaterial_sasra")
-mesh = SubResource("BoxMesh_sasra")
+mesh = SubResource("PlaneMesh_coq8p")
 
 [node name="TextureManager" type="Node" parent="."]
 script = ExtResource("1_uhqqe")
-overlay_texture_resource = SubResource("Texture2DRD_uhqqe")
+overlay_texture_resource = SubResource("Texture2DRD_ia1lp")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
+[node name="CameraBrush" type="Node3D" parent="TextureManager" node_paths=PackedStringArray("texture_manager")]
+transform = Transform3D(1, 0, 0, 0, 0.2970582, 0.9548594, 0, -0.9548594, 0.2970582, 1.3850151, 5.6907587, 2.1679149)
+script = ExtResource("3_sasra")
+texture_manager = NodePath("..")
+metadata/_custom_type_script = "uid://bq5yvj1llh63a"
+
 [node name="SubViewport" type="SubViewport" parent="."]
-use_hdr_2d = true
-size = Vector2i(3052, 1942)
+transparent_bg = true
+handle_input_locally = false
+anisotropic_filtering_level = 0
+canvas_item_default_texture_filter = 0
+oversampling = false
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 0.5892669, 0.80793846, 0, -0.80793846, 0.5892669, 0, 1.578047, 4.464621)
-projection = 2
-fov = 22.0
+transform = Transform3D(1, 0, 0, 0, 0.6876959, 0.7259988, 0, -0.7259988, 0.6876959, 0, 1.7749722, 0)
 
-[node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.7709136, 0.63693976, 0, -0.63693976, 0.7709136, -4.8225965, 1.2547336, 0.19277143)
-script = ExtResource("3_sasra")
-bleed = null
-metadata/_custom_type_script = "uid://bq5yvj1llh63a"
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1568613, 0, 0)
+material_overlay = SubResource("ShaderMaterial_coq8p")
+mesh = SubResource("PlaneMesh_2nij2")

@@ -30,6 +30,7 @@ func _exit_tree() -> void:
 func _apply_materials() -> void:
 	var mesh_instances :=  _get_child_mesh_instances(get_parent())
 
+	# pack into atlas
 	var rects: Array[Vector2] = []
 	for mesh_instance in mesh_instances:
 		rects.push_back(Vector2(mesh_instance.mesh.lightmap_size_hint))
@@ -67,6 +68,7 @@ func _create_texture() -> void:
 	fmt.width = overlay_texture_size
 	fmt.height = overlay_texture_size
 	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
 
 	# create texture view

@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bwm7j25sbgip3"
+path="res://.godot/imported/brush_compute.glsl-17da36904ffa71a4069394ef5b9ebf0b.res"
+
+[deps]
+
+source_file="res://addons/gpu_texture_painter/brush/brush_compute.glsl"
+dest_files=["res://.godot/imported/brush_compute.glsl-17da36904ffa71a4069394ef5b9ebf0b.res"]
+
+[params]
+

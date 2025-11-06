@@ -134,6 +134,24 @@ func _setup_viewport() -> void:
 	viewport.size = resolution
 
 
+func _create_brush_image_texture() -> void:
+	# Convert brush_image Texture2D to RenderingDevice texture
+	# create texure format
+	var fmt := RDTextureFormat.new()
+	fmt.width = brush_image.get_width()
+	fmt.height = brush_image.get_height()
+	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
+
+	# create texture view
+	var view := RDTextureView.new()
+
+	# create texture
+	#var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
+	brush_image_texture_rid = rd.texture_create(fmt, view, [brush_image.get_data()]) 
+
+
 func _init_compute_shader_on_render_thread() -> void:
 	RenderingServer.call_on_render_thread(_init_compute_shader)
 
@@ -152,23 +170,8 @@ func _init_compute_shader() -> void:
 	
 	# Store texture RIDs for compute shader
 	camera_brush_texture_rid = viewport_rd_texture_rid
-	
-	# Convert brush_image Texture2D to RenderingDevice texture
-	# create texure format
-	var fmt := RDTextureFormat.new()
-	fmt.width = brush_image.get_width()
-	fmt.height = brush_image.get_height()
-	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
-	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
 
-	# create texture view
-	var view := RDTextureView.new()
-
-	# create texture
-	#var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
-	brush_image_texture_rid = rd.texture_create(fmt, view, [brush_image.get_data()]) 
-
+	_create_brush_image_texture()
 
 	overlay_texture_rid = texture_manager.overlay_texture_rid
 
@@ -184,20 +187,20 @@ func _init_compute_shader() -> void:
 	camera_brush_texture_uniform.binding = 0
 	camera_brush_texture_uniform.add_id(camera_brush_texture_rid)
 
-	# output uniform: overlay texture
-	var overlay_texture_uniform := RDUniform.new()
-	overlay_texture_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	overlay_texture_uniform.binding = 1
-	overlay_texture_uniform.add_id(overlay_texture_rid)
-
 	# input uniform: brush image texture
 	var brush_image_uniform := RDUniform.new()
 	brush_image_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	brush_image_uniform.binding = 2
+	brush_image_uniform.binding = 1
 	brush_image_uniform.add_id(brush_image_texture_rid)
 
+	# output uniform: overlay texture
+	var overlay_texture_uniform := RDUniform.new()
+	overlay_texture_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	overlay_texture_uniform.binding = 2
+	overlay_texture_uniform.add_id(overlay_texture_rid)
+
 	# create uniform set
-	uniform_set = rd.uniform_set_create([camera_brush_texture_uniform, overlay_texture_uniform, brush_image_uniform], shader, 0)
+	uniform_set = rd.uniform_set_create([camera_brush_texture_uniform, brush_image_uniform, overlay_texture_uniform], shader, 0)
 
 	# get texture size to calculate work groups
 	var tex_format := rd.texture_get_format(overlay_texture_rid)

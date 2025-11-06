@@ -11,6 +11,7 @@ var rd: RenderingDevice
 var shader: RID
 var pipeline: RID
 var camera_brush_texture_rid: RID
+var brush_image_texture_rid: RID
 var overlay_texture_rid: RID
 var uniform_set: RID
 var x_groups: int
@@ -21,7 +22,7 @@ var y_groups: int
 		texture_manager = value
 		call_deferred("_init_compute_shader_on_render_thread")
 
-
+@export_group("Camera Settings")
 @export var projection: Camera3D.ProjectionType = Camera3D.ProjectionType.PROJECTION_PERSPECTIVE:
 	set(value):
 		projection = value
@@ -52,15 +53,23 @@ var y_groups: int
 		if camera:
 			camera.far = far
 
-@export var color: Color = Color.ORANGE
-
-@export var bleed: int = 0
+@export_group("Render Settings")
+@export var brush_image: Image = preload("uid://b6knnm8h3nhpi"):
+	set(value):
+		brush_image = value
+		if texture_manager:
+			call_deferred("_init_compute_shader_on_render_thread")
 
 @export var resolution: Vector2i = Vector2i(256, 256):
 	set(value):
 		resolution = Vector2i(maxi(value.x, 1), maxi(value.y, 1))
 		if viewport:
 			viewport.size = resolution
+
+@export var color: Color = Color.ORANGE
+
+@export var bleed: int = 0
+
 
 @export var drawing: bool = true
 
@@ -129,21 +138,39 @@ func _init_compute_shader_on_render_thread() -> void:
 	RenderingServer.call_on_render_thread(_init_compute_shader)
 
 func _init_compute_shader() -> void:
-	if not texture_manager or not viewport:
+	if not texture_manager or not viewport or not brush_image:
 		return
 	
-	var viewport_texture := viewport.get_texture()
-	var viewport_texture_rid := viewport_texture.get_rid()
-	var viewport_rd_texture_rid := RenderingServer.texture_get_rd_texture(viewport_texture_rid)
+	rd = RenderingServer.get_rendering_device()
 
 	# Clean up existing shader resources if any
 	_cleanup_compute_shader()
+
+	var viewport_texture := viewport.get_texture()
+	var viewport_texture_rid := viewport_texture.get_rid()
+	var viewport_rd_texture_rid := RenderingServer.texture_get_rd_texture(viewport_texture_rid)
 	
 	# Store texture RIDs for compute shader
 	camera_brush_texture_rid = viewport_rd_texture_rid
-	overlay_texture_rid = texture_manager.overlay_texture_rid
+	
+	# Convert brush_image Texture2D to RenderingDevice texture
+	# create texure format
+	var fmt := RDTextureFormat.new()
+	fmt.width = brush_image.get_width()
+	fmt.height = brush_image.get_height()
+	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
 
-	rd = RenderingServer.get_rendering_device()
+	# create texture view
+	var view := RDTextureView.new()
+
+	# create texture
+	#var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
+	brush_image_texture_rid = rd.texture_create(fmt, view, [brush_image.get_data()]) 
+
+
+	overlay_texture_rid = texture_manager.overlay_texture_rid
 
 	# create shader
 	var shader_file := load("uid://bwm7j25sbgip3")
@@ -163,8 +190,14 @@ func _init_compute_shader() -> void:
 	overlay_texture_uniform.binding = 1
 	overlay_texture_uniform.add_id(overlay_texture_rid)
 
+	# input uniform: brush image texture
+	var brush_image_uniform := RDUniform.new()
+	brush_image_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	brush_image_uniform.binding = 2
+	brush_image_uniform.add_id(brush_image_texture_rid)
+
 	# create uniform set
-	uniform_set = rd.uniform_set_create([camera_brush_texture_uniform, overlay_texture_uniform], shader, 0)
+	uniform_set = rd.uniform_set_create([camera_brush_texture_uniform, overlay_texture_uniform, brush_image_uniform], shader, 0)
 
 	# get texture size to calculate work groups
 	var tex_format := rd.texture_get_format(overlay_texture_rid)
@@ -189,9 +222,7 @@ func _cleanup_compute_shader() -> void:
 	if uniform_set.is_valid():
 		rd.free_rid(uniform_set)
 		uniform_set = RID()
-	if pipeline.is_valid():
-		rd.free_rid(pipeline)
-		pipeline = RID()
 	if shader.is_valid():
 		rd.free_rid(shader)
 		shader = RID()
+	brush_image_texture_rid = RID()

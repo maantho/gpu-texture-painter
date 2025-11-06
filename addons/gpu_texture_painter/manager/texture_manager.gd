@@ -2,30 +2,27 @@
 class_name TextureManager
 extends Node
 
-@export var overlay_material: Material = preload("uid://bdnbf5ol6km4a")
-@export_tool_button("Apply Materials") var tmp = _apply_materials
-
-@export var overlay_texture_size: int = 1024
+@export_range(0, 8192) var overlay_texture_size: int = 1024
 var overlay_texture_rid: RID = RID()
 @export_storage var overlay_texture_resource: Texture2DRD = null
+@export_tool_button("Recreate Texture") var texture_action = _create_texture_apply_resource
+
+@export var overlay_material: Material = preload("uid://bdnbf5ol6km4a")
+@export_tool_button("Apply Materials") var material_action = _apply_materials
 
 var rd: RenderingDevice
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	rd = RenderingServer.get_rendering_device()
-	_create_texture()
+	_create_texture_apply_resource()
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 func _exit_tree() -> void:
-	if overlay_texture_rid and rd:
-		rd.free_rid(overlay_texture_rid)
-		overlay_texture_rid = RID()
+	if overlay_texture_resource:
 		overlay_texture_resource.texture_rd_rid = RID()
+	RenderingServer.call_on_render_thread(_cleanup_texture)
+
 
 func _apply_materials() -> void:
 	var mesh_instances :=  _get_child_mesh_instances(get_parent())
@@ -37,12 +34,12 @@ func _apply_materials() -> void:
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
 
-	for mesh_instance in mesh_instances:
+	for i in mesh_instances.size():
+		var mesh_instance = mesh_instances[i]
 		mesh_instance.material_overlay = overlay_material.duplicate()
 		mesh_instance.material_overlay.set_shader_parameter("overlay_texture", overlay_texture_resource)
-		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[mesh_instances.find(mesh_instance)].position)
-		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[mesh_instances.find(mesh_instance)].size)
-		print("set material")
+		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[i].position)
+		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[i].size)
 
 
 func _get_self_and_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] = []) -> Array[MeshInstance3D]:
@@ -62,6 +59,11 @@ func _get_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] =
 	return children_acc
 
 
+func _create_texture_apply_resource() -> void:
+	RenderingServer.call_on_render_thread(_create_texture)
+	_apply_texture_to_texture_resource()
+
+
 func _create_texture() -> void:
 	# create texure format
 	var fmt := RDTextureFormat.new()
@@ -79,13 +81,16 @@ func _create_texture() -> void:
 	var image := Image.load_from_file("uid://b8e56cw41rh6y")
 	overlay_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
-	_apply_texture_to_texture_resource()
-
 
 func _apply_texture_to_texture_resource() -> void:
 	#create Texture2DRD
 	if not overlay_texture_resource:
 		overlay_texture_resource = Texture2DRD.new()
 	
-	overlay_texture_resource.texture_rd_rid = overlay_texture_rid
+	overlay_texture_resource.texture_rd_rid = overlay_texture_rid  # handles cleanup of old RID
 	notify_property_list_changed()
+
+
+func _cleanup_texture() -> void:
+	if overlay_texture_rid.is_valid():
+		rd.free_rid(overlay_texture_rid)

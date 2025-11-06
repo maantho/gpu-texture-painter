@@ -15,8 +15,8 @@ void fragment() {
 	//if cull mask layer 21 is enabled, the camera acts as a brush
 	bool brush = (CAMERA_VISIBLE_LAYERS & (1u << uint(20))) != 0u;
 
-	    // Make unshaded when brush is true
     if(brush){
+		// display brush UVs in emission
         EMISSION = vec3(atlas_uv, 0);
         ALBEDO = vec3(0);
     }

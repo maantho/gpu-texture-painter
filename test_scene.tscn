@@ -67,9 +67,9 @@ overlay_texture_resource = SubResource("Texture2DRD_ia1lp")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
 [node name="CameraBrush" type="Node3D" parent="." node_paths=PackedStringArray("texture_manager")]
-transform = Transform3D(-0.036050655, 0.99934995, 1.3916948e-09, 0.12021464, 0.0043366337, 0.99273837, 0.9920931, 0.035788875, -0.12029284, -2.5519588, 3.521921, -0.78210974)
+transform = Transform3D(-0.036050655, 0.99934995, 1.3916948e-09, 0.12021464, 0.0043366337, 0.99273837, 0.9920931, 0.035788875, -0.12029284, 0.7594583, 4.9476376, -2.1055088)
 script = ExtResource("4_coq8p")
 texture_manager = NodePath("../TextureManager")
 projection = 1
-color = Color(0.7568708, 0.25419232, 0.2890374, 1)
+color = Color(0.6696667, 0.1680183, 0.20598418, 0.20500001)
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"

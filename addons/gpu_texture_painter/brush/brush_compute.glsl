@@ -23,14 +23,20 @@ void main() {
 		return;
 	}
 
-    ivec2 brush_image_coords = ivec2(vec2(brush_texture_coords) / vec2(imageSize(brush_texture)) * vec2(imageSize(brush_image)));
-    float alpha = imageLoad(brush_image, brush_image_coords).a;
-
     vec4 overlay_texture_uv = imageLoad(brush_texture, brush_texture_coords);
     ivec2 overlay_texture_coords = ivec2(overlay_texture_uv.xy * vec2(imageSize(overlay_texture)));
-
     vec4 existing_color = imageLoad(overlay_texture, overlay_texture_coords);
-    vec4 new_color = existing_color * (1.0f - alpha) + params.brush_color * alpha;
 
-    imageStore(overlay_texture, overlay_texture_coords, new_color);
+    ivec2 brush_image_coords = ivec2(vec2(brush_texture_coords) / vec2(imageSize(brush_texture)) * vec2(imageSize(brush_image)));
+    vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_image, brush_image_coords).a * params.brush_color.a);
+
+    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+    vec3 out_color;
+    if (out_alpha > 0.0f) {
+        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+    }
+    else {
+        out_color = vec3(0.0f);
+    }
+    imageStore(overlay_texture, overlay_texture_coords, vec4(out_color, out_alpha));
 }

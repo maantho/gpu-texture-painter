@@ -8,6 +8,10 @@ layout(rgba16f, set = 0, binding = 0) uniform restrict readonly image2D brush_te
 
 layout(rgba32f, set = 0, binding = 1) uniform restrict readonly image2D brush_image;
 
+layout(push_constant, std430) uniform Params {
+	vec4 brush_color;
+} params;
+
 layout(rgba32f, set = 0, binding = 2) uniform restrict image2D overlay_texture;
 
 // The code we want to execute in each invocation
@@ -26,7 +30,7 @@ void main() {
     ivec2 overlay_texture_coords = ivec2(overlay_texture_uv.xy * vec2(imageSize(overlay_texture)));
 
     vec4 existing_color = imageLoad(overlay_texture, overlay_texture_coords);
-    vec4 new_color = existing_color * (1.0 - alpha) + vec4(1.0, 1.0, 1.0, 1.0) * alpha;
+    vec4 new_color = existing_color * (1.0f - alpha) + params.brush_color * alpha;
 
     imageStore(overlay_texture, overlay_texture_coords, new_color);
 }

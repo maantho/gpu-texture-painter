@@ -211,9 +211,18 @@ func _init_compute_shader() -> void:
 
 
 func _dispatch_compute_shader() -> void:
+
+	var linear_color := color.srgb_to_linear()
+	var push_constant : PackedFloat32Array = PackedFloat32Array()
+	push_constant.push_back(linear_color.r)
+	push_constant.push_back(linear_color.g)
+	push_constant.push_back(linear_color.b)
+	push_constant.push_back(linear_color.a)
+
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4)
 	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 	rd.compute_list_end()
 

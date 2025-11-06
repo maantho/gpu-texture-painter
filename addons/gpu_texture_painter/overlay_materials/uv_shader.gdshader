@@ -1,6 +1,6 @@
 shader_type spatial;
 
-uniform sampler2D overlay_texture : hint_default_transparent;
+uniform sampler2D overlay_texture;
 uniform vec2 position_in_atlas;
 uniform vec2 size_in_atlas;
 //uniform int index_in_atlas;
@@ -21,8 +21,9 @@ void fragment() {
         ALBEDO = vec3(0);
     }
 	else{
-		ALBEDO = vec3(atlas_uv, 0);
-		ALPHA = texture(overlay_texture, atlas_uv).a;
+		vec4 atlas_color = texture(overlay_texture, atlas_uv);
+		ALBEDO = atlas_color.rgb;
+		ALPHA = atlas_color.a;
 	}
 }
 

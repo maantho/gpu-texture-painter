@@ -5,23 +5,29 @@ extends Node
 @export_range(0, 8192) var overlay_texture_size: int = 1024
 var overlay_texture_rid: RID = RID()
 @export_storage var overlay_texture_resource: Texture2DRD = null
-@export_tool_button("Recreate Texture") var texture_action = _create_texture_apply_resource
 
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
-@export_tool_button("Construct Atlas and Apply Materials") var material_action = _construct_atlas_and_apply_materials
+
+@export_tool_button("Apply") var apply_action = apply
 
 var rd: RenderingDevice
 
-
 func _ready() -> void:
 	rd = RenderingServer.get_rendering_device()
-	_create_texture_apply_resource()
+	RenderingServer.call_on_render_thread(_create_texture)
+	_apply_texture_to_texture_resource()
 
 
 func _exit_tree() -> void:
 	if overlay_texture_resource:
 		overlay_texture_resource.texture_rd_rid = RID()
 	RenderingServer.call_on_render_thread(_cleanup_texture)
+
+
+func apply() -> void:
+	RenderingServer.call_on_render_thread(_create_texture)
+	_apply_texture_to_texture_resource()
+	_construct_atlas_and_apply_materials()
 
 
 func _construct_atlas_and_apply_materials() -> void:
@@ -68,11 +74,6 @@ func _get_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] =
 		children_acc = _get_self_and_child_mesh_instances(child, children_acc)
 
 	return children_acc
-
-
-func _create_texture_apply_resource() -> void:
-	RenderingServer.call_on_render_thread(_create_texture)
-	_apply_texture_to_texture_resource()
 
 
 func _create_texture() -> void:

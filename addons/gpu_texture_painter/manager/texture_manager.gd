@@ -8,7 +8,7 @@ var overlay_texture_rid: RID = RID()
 @export_tool_button("Recreate Texture") var texture_action = _create_texture_apply_resource
 
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
-@export_tool_button("Apply Materials") var material_action = _apply_materials
+@export_tool_button("Construct Atlas and Apply Materials") var material_action = _construct_atlas_and_apply_materials
 
 var rd: RenderingDevice
 
@@ -24,19 +24,27 @@ func _exit_tree() -> void:
 	RenderingServer.call_on_render_thread(_cleanup_texture)
 
 
-func _apply_materials() -> void:
+func _construct_atlas_and_apply_materials() -> void:
 	var mesh_instances :=  _get_child_mesh_instances(get_parent())
 
 	# pack into atlas
 	var rects: Array[Vector2] = []
 	for mesh_instance in mesh_instances:
-		rects.push_back(Vector2(mesh_instance.mesh.lightmap_size_hint))
+		if mesh_instance.mesh == null:
+			mesh_instances.erase(mesh_instance)
+			push_warning("MeshInstance3D '{0}' has no mesh assigned, skipping overlay material application.".format([mesh_instance.name]))
+		else:
+			if mesh_instance.mesh.lightmap_size_hint == Vector2i.ZERO:
+				mesh_instances.erase(mesh_instance)
+				push_warning("MeshInstance3D '{0}' has no lightmap size hint set, skipping overlay material application.".format([mesh_instance.name]))
+			else:
+				rects.push_back(Vector2(mesh_instance.mesh.lightmap_size_hint))
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
 
 	var overlay_material := ShaderMaterial.new()
 	overlay_material.shader = overlay_shader
-	
+
 	for i in mesh_instances.size():
 		var mesh_instance = mesh_instances[i]
 		mesh_instance.material_overlay = overlay_material.duplicate()

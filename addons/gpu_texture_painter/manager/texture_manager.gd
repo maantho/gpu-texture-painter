@@ -60,6 +60,7 @@ func _construct_atlas_and_apply_materials() -> void:
 		mesh_instance.material_overlay.set_shader_parameter("overlay_texture", overlay_texture_resource)
 		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[i].position)
 		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[i].size)
+		mesh_instance.layers |= 1 << 20  # enable overlay layer 21
 
 
 func _get_self_and_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] = []) -> Array[MeshInstance3D]:

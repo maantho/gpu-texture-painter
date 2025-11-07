@@ -120,7 +120,7 @@ func _setup_viewport() -> void:
 		push_error("CameraBrush: Failed to get camera from camera brush viewport scene")
 		return
 
-	camera.cull_mask += int(1) << int(20)  # Set layer 21 to detect brush render
+	camera.cull_mask = int(1) << int(20)  # Set layer 21 to detect brush render
 
 	camera.projection = projection
 	camera.fov = fov

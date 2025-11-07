@@ -35,7 +35,8 @@ func _construct_atlas_and_apply_materials() -> void:
 
 	# pack into atlas
 	var rects: Array[Vector2] = []
-	for mesh_instance in mesh_instances:
+	for i in range(mesh_instances.size() - 1, -1, -1):
+		var mesh_instance = mesh_instances[i]
 		if mesh_instance.mesh == null:
 			mesh_instances.erase(mesh_instance)
 			push_warning("MeshInstance3D '{0}' has no mesh assigned, skipping overlay material application.".format([mesh_instance.name]))
@@ -45,6 +46,8 @@ func _construct_atlas_and_apply_materials() -> void:
 				push_warning("MeshInstance3D '{0}' has no lightmap size hint set, skipping overlay material application.".format([mesh_instance.name]))
 			else:
 				rects.push_back(Vector2(mesh_instance.mesh.lightmap_size_hint))
+	
+	rects.reverse()
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
 

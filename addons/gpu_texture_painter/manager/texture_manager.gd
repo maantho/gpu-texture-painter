@@ -89,8 +89,7 @@ func _create_texture() -> void:
 	var view := RDTextureView.new()
 
 	# create texture
-	#var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
-	var image := Image.load_from_file("uid://b8e56cw41rh6y")
+	var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
 	overlay_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 

@@ -42,15 +42,11 @@ var y_groups: int
 		if camera:
 			camera.size = size
 
-@export var near: float = 0.1:
-	set(value):
-		near = maxf(value, 0.001)
-		if camera:
-			camera.near = near
 @export var far: float = 1000.0:
 	set(value):
-		far = maxf(value, near + 0.01)
+		far = value
 		if camera:
+			far = maxf(value, camera.near + 0.01)
 			camera.far = far
 
 @export_group("Render Settings")
@@ -129,7 +125,6 @@ func _setup_viewport() -> void:
 	camera.projection = projection
 	camera.fov = fov
 	camera.size = size
-	camera.near = near
 	camera.far = far
 	viewport.size = resolution
 

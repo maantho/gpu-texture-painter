@@ -7,7 +7,7 @@ var overlay_texture_rid: RID = RID()
 @export_storage var overlay_texture_resource: Texture2DRD = null
 @export_tool_button("Recreate Texture") var texture_action = _create_texture_apply_resource
 
-@export var overlay_material: Material = preload("uid://bdnbf5ol6km4a")
+@export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
 @export_tool_button("Apply Materials") var material_action = _apply_materials
 
 var rd: RenderingDevice
@@ -34,6 +34,9 @@ func _apply_materials() -> void:
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
 
+	var overlay_material := ShaderMaterial.new()
+	overlay_material.shader = overlay_shader
+	
 	for i in mesh_instances.size():
 		var mesh_instance = mesh_instances[i]
 		mesh_instance.material_overlay = overlay_material.duplicate()

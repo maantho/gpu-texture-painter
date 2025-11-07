@@ -1,13 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene load_steps=10 format=3 uid="uid://gf5fmdn7810t"]
 
-[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/uv_shader.gdshader" id="1_ia1lp"]
+[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/default_overlay.gdshader" id="1_ia1lp"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/texture_manager.gd" id="1_uhqqe"]
-[ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="4_coq8p"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_ia1lp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sasra"]
-resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_ia1lp")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_ia1lp")
@@ -20,7 +18,6 @@ add_uv2 = true
 size = Vector2(5.84, 6.44)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
-resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_ia1lp")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_ia1lp")
@@ -32,7 +29,6 @@ lightmap_size_hint = Vector2i(12, 12)
 add_uv2 = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2nij2"]
-resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_ia1lp")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_ia1lp")
@@ -61,15 +57,11 @@ material_overlay = SubResource("ShaderMaterial_2nij2")
 mesh = SubResource("BoxMesh_6adnx")
 skeleton = NodePath("../MeshInstance3D")
 
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.03605066, 0.99934995, 2.6793652e-09, -0.016412066, -0.0005920534, 0.9998652, 0.9992152, 0.036045797, 0.016422743, -0.58123493, 5.519312, -0.79451805)
+near = 0.01
+
 [node name="TextureManager" type="Node" parent="."]
 script = ExtResource("1_uhqqe")
 overlay_texture_resource = SubResource("Texture2DRD_ia1lp")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
-
-[node name="CameraBrush" type="Node3D" parent="." node_paths=PackedStringArray("texture_manager")]
-transform = Transform3D(-0.036050655, 0.99934995, 1.3916948e-09, 0.12021464, 0.0043366337, 0.99273837, 0.9920931, 0.035788875, -0.12029284, 0.7594583, 4.9476376, -2.1055088)
-script = ExtResource("4_coq8p")
-texture_manager = NodePath("../TextureManager")
-projection = 1
-color = Color(0.6696667, 0.1680183, 0.20598418, 0.20500001)
-metadata/_custom_type_script = "uid://bq5yvj1llh63a"

@@ -11,7 +11,7 @@ var rd: RenderingDevice
 var shader: RID
 var pipeline: RID
 var camera_brush_texture_rid: RID
-var brush_image_texture_rid: RID
+var brush_shape_texture_rid: RID
 var overlay_texture_rid: RID
 var uniform_set: RID
 var x_groups: int
@@ -50,9 +50,9 @@ var y_groups: int
 			camera.far = far
 
 @export_group("Render Settings")
-@export var brush_image: Image = preload("uid://b6knnm8h3nhpi"):
+@export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
 	set(value):
-		brush_image = value
+		brush_shape = value
 		if texture_manager:
 			call_deferred("_init_compute_shader_on_render_thread")
 
@@ -129,12 +129,11 @@ func _setup_viewport() -> void:
 	viewport.size = resolution
 
 
-func _create_brush_image_texture() -> void:
-	# Convert brush_image Texture2D to RenderingDevice texture
+func _create_brush_shape_texture() -> void:
 	# create texure format
 	var fmt := RDTextureFormat.new()
-	fmt.width = brush_image.get_width()
-	fmt.height = brush_image.get_height()
+	fmt.width = brush_shape.get_width()
+	fmt.height = brush_shape.get_height()
 	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
@@ -144,14 +143,14 @@ func _create_brush_image_texture() -> void:
 
 	# create texture
 	#var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
-	brush_image_texture_rid = rd.texture_create(fmt, view, [brush_image.get_data()]) 
+	brush_shape_texture_rid = rd.texture_create(fmt, view, [brush_shape.get_data()]) 
 
 
 func _init_compute_shader_on_render_thread() -> void:
 	RenderingServer.call_on_render_thread(_init_compute_shader)
 
 func _init_compute_shader() -> void:
-	if not texture_manager or not viewport or not brush_image:
+	if not texture_manager or not viewport or not brush_shape:
 		return
 	
 	rd = RenderingServer.get_rendering_device()
@@ -159,15 +158,16 @@ func _init_compute_shader() -> void:
 	# Clean up existing shader resources if any
 	_cleanup_compute_shader()
 
+	# get camera brush texture RID
 	var viewport_texture := viewport.get_texture()
 	var viewport_texture_rid := viewport_texture.get_rid()
 	var viewport_rd_texture_rid := RenderingServer.texture_get_rd_texture(viewport_texture_rid)
-	
-	# Store texture RIDs for compute shader
 	camera_brush_texture_rid = viewport_rd_texture_rid
 
-	_create_brush_image_texture()
+	# create brush shape texture
+	_create_brush_shape_texture()
 
+	# get overlay texture RID from texture manager
 	overlay_texture_rid = texture_manager.overlay_texture_rid
 
 	# create shader
@@ -186,7 +186,7 @@ func _init_compute_shader() -> void:
 	var brush_image_uniform := RDUniform.new()
 	brush_image_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
 	brush_image_uniform.binding = 1
-	brush_image_uniform.add_id(brush_image_texture_rid)
+	brush_image_uniform.add_id(brush_shape_texture_rid)
 
 	# output uniform: overlay texture
 	var overlay_texture_uniform := RDUniform.new()
@@ -232,4 +232,4 @@ func _cleanup_compute_shader() -> void:
 	if shader.is_valid():
 		rd.free_rid(shader)
 		shader = RID()
-	brush_image_texture_rid = RID()
+	brush_shape_texture_rid = RID()

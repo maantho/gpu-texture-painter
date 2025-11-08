@@ -55,11 +55,12 @@ transform = Transform3D(1, 0, 0, 0, 0.11353267, 0.99353427, 0, -0.99353427, 0.11
 far = 10.14
 
 [node name="CameraBrush" type="Node3D" parent="." node_paths=PackedStringArray("texture_manager")]
-transform = Transform3D(0.99975085, 0.019872053, -0.010164637, 0.012838402, -0.13942567, 0.9901495, 0.018259067, -0.99003327, -0.13964611, -0.49632835, 9.894611, -2.3045235)
+transform = Transform3D(1, 0, 0, 0, 0.001640633, 0.9999986, 0, -0.9999986, 0.001640633, 1.2874609, 1.8490125, -0.9645081)
 script = ExtResource("4_coq8p")
 texture_manager = NodePath("../TextureManager")
-max_distance = 10.0
-start_distance_fade = 0.42
+resolution = Vector2i(10, 10)
+bleed = 1
+start_bleed_fade = 0.13
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
 [editable path="CameraBrushViewport"]

@@ -65,6 +65,7 @@ var y_groups: int
 @export var color: Color = Color.ORANGE
 
 @export var bleed: int = 0
+@export_range(0, 1, 0.01) var start_bleed_fade: float = 1.0
 
 @export_range(0, 1, 0.01) var start_distance_fade: float = 1.0
 
@@ -216,9 +217,13 @@ func _dispatch_compute_shader(delta: float) -> void:
 	push_constant.push_back(linear_color.b)
 	push_constant.push_back(linear_color.a)
 	push_constant.push_back(delta * 100)  # need 0.01 seconds to draw full opacity
-	push_constant.push_back(start_distance_fade)
 	push_constant.push_back(max_distance)
-	push_constant.push_back(0.0)  # padding
+	push_constant.push_back(start_distance_fade)
+	push_constant.push_back(float(bleed))
+	push_constant.push_back(start_bleed_fade)
+	push_constant.push_back(0.0)
+	push_constant.push_back(0.0)
+	push_constant.push_back(0.0)
 
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)

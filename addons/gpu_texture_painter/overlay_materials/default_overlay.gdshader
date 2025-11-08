@@ -14,11 +14,11 @@ void fragment() {
 
 	//if cull mask layer 21 is enabled, the camera acts as a brush
 	bool brush = (CAMERA_VISIBLE_LAYERS & (1u << uint(20))) != 0u;
-
+	
     if(brush){
 		// display brush UVs in emission
-        EMISSION = vec3(atlas_uv, 0);
-        ALBEDO = vec3(0);
+		EMISSION = vec3(atlas_uv, -VERTEX.z);
+		ALBEDO = vec3(0);
     }
 	else{
 		vec4 atlas_color = texture(overlay_texture, atlas_uv);

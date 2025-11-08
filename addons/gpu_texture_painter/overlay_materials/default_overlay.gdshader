@@ -16,9 +16,8 @@ void fragment() {
 	bool brush = (CAMERA_VISIBLE_LAYERS & (1u << uint(20))) != 0u;
 	
     if(brush){
-		// display brush UVs in emission
-		EMISSION = vec3(atlas_uv, -VERTEX.z);
-		ALBEDO = vec3(0);
+		// display brush UVs, viewport must be set to debug_unshaded
+		ALBEDO = vec3(atlas_uv, -VERTEX.z);
     }
 	else{
 		vec4 atlas_color = texture(overlay_texture, atlas_uv);

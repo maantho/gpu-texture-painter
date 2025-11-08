@@ -42,12 +42,12 @@ var y_groups: int
 		if camera:
 			camera.size = size
 
-@export var far: float = 1000.0:
+@export var max_distance: float = 1000.0:
 	set(value):
-		far = value
+		max_distance = value
 		if camera:
-			far = maxf(value, camera.near + 0.01)
-			camera.far = far
+			max_distance = maxf(value, camera.near + 0.01)
+			camera.far = max_distance
 
 @export_group("Render Settings")
 @export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
@@ -65,6 +65,8 @@ var y_groups: int
 @export var color: Color = Color.ORANGE
 
 @export var bleed: int = 0
+
+@export_range(0, 1, 0.01) var start_distance_fade: float = 1.0
 
 
 @export var drawing: bool = true
@@ -125,7 +127,7 @@ func _setup_viewport() -> void:
 	camera.projection = projection
 	camera.fov = fov
 	camera.size = size
-	camera.far = far
+	camera.far = max_distance
 	viewport.size = resolution
 
 
@@ -213,6 +215,10 @@ func _dispatch_compute_shader() -> void:
 	push_constant.push_back(linear_color.g)
 	push_constant.push_back(linear_color.b)
 	push_constant.push_back(linear_color.a)
+	push_constant.push_back(start_distance_fade)
+	push_constant.push_back(max_distance)
+	push_constant.push_back(0.0)  # padding
+	push_constant.push_back(0.0)  # padding
 
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)

@@ -86,7 +86,7 @@ func _process(delta: float) -> void:
 	camera.global_rotation = global_rotation
 
 	if drawing and pipeline.is_valid():
-		RenderingServer.call_on_render_thread(_dispatch_compute_shader)
+		RenderingServer.call_on_render_thread(_dispatch_compute_shader.bind(delta))
 
 
 func _validate_property(property: Dictionary) -> void:
@@ -207,7 +207,7 @@ func _init_compute_shader() -> void:
 	y_groups = (tex_size.y - 1) / 8 + 1
 
 
-func _dispatch_compute_shader() -> void:
+func _dispatch_compute_shader(delta: float) -> void:
 
 	var linear_color := color.srgb_to_linear()
 	var push_constant : PackedFloat32Array = PackedFloat32Array()
@@ -215,9 +215,9 @@ func _dispatch_compute_shader() -> void:
 	push_constant.push_back(linear_color.g)
 	push_constant.push_back(linear_color.b)
 	push_constant.push_back(linear_color.a)
+	push_constant.push_back(delta * 100)  # need 0.01 seconds to draw full opacity
 	push_constant.push_back(start_distance_fade)
 	push_constant.push_back(max_distance)
-	push_constant.push_back(0.0)  # padding
 	push_constant.push_back(0.0)  # padding
 
 	var compute_list := rd.compute_list_begin()

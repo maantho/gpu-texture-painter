@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene load_steps=10 format=3 uid="uid://gf5fmdn7810t"]
 
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/default_overlay.gdshader" id="1_ia1lp"]
-[ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="1_uhqqe"]
 [ext_resource type="PackedScene" uid="uid://be0n8acdsbi8p" path="res://addons/gpu_texture_painter/brush/camera_brush_viewport.tscn" id="4_2nij2"]
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="4_coq8p"]
 
@@ -9,7 +8,7 @@
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_coq8p"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2nij2"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
 render_priority = 0
 shader = ExtResource("1_ia1lp")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_coq8p")
@@ -35,32 +34,27 @@ mesh = SubResource("BoxMesh_6adnx")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 layers = 1048577
-material_overlay = SubResource("ShaderMaterial_2nij2")
+material_overlay = SubResource("ShaderMaterial_coq8p")
 mesh = SubResource("PlaneMesh_uhqqe")
 skeleton = NodePath("../MeshInstance3D")
-
-[node name="TextureManager" type="Node" parent="."]
-script = ExtResource("1_uhqqe")
-atlas_texture_resource = SubResource("Texture2DRD_coq8p")
-metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.736408, 2.551378, 0)
 mesh = SubResource("PlaneMesh_coq8p")
+
+[node name="CameraBrush" type="Node3D" parent="MeshInstance3D3" node_paths=PackedStringArray("overlay_atlas_manager")]
+transform = Transform3D(1, 0, 0, 0, 0.001640633, 0.9999986, 0, -0.9999986, 0.001640633, 16.593538, -1.3991933, -0.9837463)
+script = ExtResource("4_coq8p")
+overlay_atlas_manager = NodePath("")
+fov = 5.705
+max_distance = 50.0
+resolution = Vector2i(3182, 861)
+metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
 [node name="CameraBrushViewport" parent="." instance=ExtResource("4_2nij2")]
 
 [node name="Camera3D" parent="CameraBrushViewport" index="0"]
 transform = Transform3D(1, 0, 0, 0, 0.11353267, 0.99353427, 0, -0.99353427, 0.11353267, 0, 5.037711, 0)
 far = 10.14
-
-[node name="CameraBrush" type="Node3D" parent="." node_paths=PackedStringArray("overlay_atlas_manager")]
-transform = Transform3D(1, 0, 0, 0, 0.001640633, 0.9999986, 0, -0.9999986, 0.001640633, 0.3083105, 1.1521845, 1.548706)
-script = ExtResource("4_coq8p")
-overlay_atlas_manager = NodePath("../TextureManager")
-fov = 5.705
-max_distance = 50.0
-resolution = Vector2i(3182, 861)
-metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
 [editable path="CameraBrushViewport"]

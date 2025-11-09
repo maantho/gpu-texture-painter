@@ -12,7 +12,11 @@ var atlas_texture_rid: RID = RID()
 
 var rd: RenderingDevice
 
+const  GROUP_NAME := "overlay_atlas_managers"
+
 func _ready() -> void:
+	add_to_group(GROUP_NAME)
+
 	rd = RenderingServer.get_rendering_device()
 	RenderingServer.call_on_render_thread(_create_texture)
 	_apply_texture_to_texture_resource()
@@ -105,6 +109,9 @@ func _create_texture() -> void:
 	# create texture
 	var image := Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
 	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
+
+	# notify brushes
+	get_tree().call_group(CameraBrush.GROUP_NAME, "set_atlas_texture", atlas_texture_rid)
 
 
 func _apply_texture_to_texture_resource() -> void:

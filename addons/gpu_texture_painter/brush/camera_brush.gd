@@ -2,12 +2,6 @@
 class_name CameraBrush
 extends Node3D
 
-
-@export var overlay_atlas_manager: OverlayAtlasManager:
-	set(value):
-		overlay_atlas_manager = value
-		_get_atlas_texture()
-
 @export_group("Camera Settings")
 @export var projection: Camera3D.ProjectionType = Camera3D.ProjectionType.PROJECTION_PERSPECTIVE:
 	set(value):
@@ -80,8 +74,11 @@ var atlas_texture_uniform_set: RID
 var x_groups: int
 var y_groups: int
 
+const  GROUP_NAME := "camera_brushes"
 
 func _ready() -> void:
+	add_to_group(GROUP_NAME)
+
 	rd = RenderingServer.get_rendering_device()
 
 	_setup()
@@ -150,7 +147,7 @@ func _setup() -> void:
 
 	#try start
 	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
-	(func(): RenderingServer.call_on_render_thread(_get_atlas_texture)).call_deferred()  # call after SceneTree is fully initialized
+	(func(): RenderingServer.call_on_render_thread(set_atlas_texture)).call_deferred()  # call after SceneTree is fully initialized
 	_calculate_work_groups()
 
 
@@ -230,21 +227,31 @@ func _create_brush_shape_texture() -> void:
 	brush_shape_uniform_set = rd.uniform_set_create([uniform], shader, 1)
 
 
-func _get_atlas_texture() -> void:
-	if not overlay_atlas_manager:
-		return
-	
-	if not overlay_atlas_manager.atlas_texture_rid.is_valid():
-		return
+func set_atlas_texture(texture_rid: RID = RID()) -> void:
 
-	# if atlas_texture_uniform_set.is_valid():
-	# 	rd.free_rid(atlas_texture_uniform_set)
-	# 	atlas_texture_uniform_set = RID()
+	var atlas_texture_rid: RID
+
+	if texture_rid.is_valid():
+		# use provided texture RID (Called by Manager)
+		atlas_texture_rid = texture_rid
+		print("CameraBrush: Setting overlay atlas texture provided by manager")
+
+	else:
+		# internal call to get from manager
+		var all_managers = get_tree().get_nodes_in_group(OverlayAtlasManager.GROUP_NAME)
+		if all_managers.is_empty():
+			return
+
+		var overlay_atlas_manager := all_managers[0] as OverlayAtlasManager
+		if not overlay_atlas_manager:
+			return
+		if not overlay_atlas_manager.atlas_texture_rid.is_valid():
+			return
+
+		atlas_texture_rid = overlay_atlas_manager.atlas_texture_rid
+		print("CameraBrush: Setting overlay atlas texture by searching managers")
 
 
-	print("CameraBrush: Getting overlay atlas texture")
-
-	var atlas_texture_rid = overlay_atlas_manager.atlas_texture_rid
 
 	# output uniform: atlas texture
 	var uniform := RDUniform.new()

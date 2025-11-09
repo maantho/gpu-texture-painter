@@ -39,7 +39,7 @@ extends Node3D
 @export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
 	set(value):
 		brush_shape = value
-		_create_brush_shape_texture()
+		RenderingServer.call_on_render_thread(_create_brush_shape_texture)
 
 @export var resolution: Vector2i = Vector2i(256, 256):
 	set(value):
@@ -47,7 +47,7 @@ extends Node3D
 		_calculate_work_groups()
 		if viewport:
 			viewport.size = resolution
-			_get_brush_viewport_texture()
+			RenderingServer.call_on_render_thread(_get_brush_viewport_texture)
 
 @export var color: Color = Color.ORANGE
 
@@ -82,11 +82,13 @@ var y_groups: int
 
 
 func _enter_tree() -> void:
+	rd = RenderingServer.get_rendering_device()
+
 	if not viewport:
 		_setup()
 	
-	_create_brush_shape_texture()
-	_get_overlay_texture()
+	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
+	RenderingServer.call_on_render_thread(_get_overlay_texture)
 	_calculate_work_groups()
 
 
@@ -118,7 +120,7 @@ func _exit_tree() -> void:
 
 
 func _setup() -> void:
-	_cleanup_compute_shader()
+	RenderingServer.call_on_render_thread(_cleanup_compute_shader)
 
 	# setup viewport nodes
 	if not camera_brush_scene:
@@ -147,13 +149,12 @@ func _setup() -> void:
 	viewport.size = resolution
 
 	# setup shader
-	rd = RenderingServer.get_rendering_device()
-	_create_shader_and_pipeline()
-	_get_brush_viewport_texture()
+	RenderingServer.call_on_render_thread(_create_shader_and_pipeline)
+	RenderingServer.call_on_render_thread(_get_brush_viewport_texture)
 
 	#try start
-	_create_brush_shape_texture()
-	_get_overlay_texture()
+	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
+	RenderingServer.call_on_render_thread(_get_overlay_texture)
 	_calculate_work_groups()
 
 

@@ -154,7 +154,7 @@ func _setup() -> void:
 
 	#try start
 	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
-	RenderingServer.call_on_render_thread(_get_overlay_texture)
+	(func(): RenderingServer.call_on_render_thread(_get_overlay_texture)).call_deferred()  # call after SceneTree is fully initialized
 	_calculate_work_groups()
 
 

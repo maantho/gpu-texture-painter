@@ -1,10 +1,10 @@
 @tool
-class_name TextureManager
+class_name OverlayAtlasManager
 extends Node
 
-@export_range(0, 8192) var overlay_texture_size: int = 1024
-var overlay_texture_rid: RID = RID()
-@export_storage var overlay_texture_resource: Texture2DRD = null
+@export_range(0, 8192) var atlas_size: int = 1024
+var atlas_texture_rid: RID = RID()
+@export_storage var atlas_texture_resource: Texture2DRD = null
 
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
 
@@ -50,7 +50,7 @@ func _construct_atlas_and_apply_materials() -> void:
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
 
-	print("TextureManager: Packed {0} mesh instances into overlay atlas of size {1}x{1}".format([mesh_instances.size(), overlay_texture_size]))
+	print("OverlayAtlasManager: Packed {0} mesh instances into overlay atlas of size {1}x{1}".format([mesh_instances.size(), atlas_size]))
 
 	var overlay_material := ShaderMaterial.new()
 	overlay_material.shader = overlay_shader
@@ -58,12 +58,12 @@ func _construct_atlas_and_apply_materials() -> void:
 	for i in mesh_instances.size():
 		var mesh_instance = mesh_instances[i]
 		mesh_instance.material_overlay = overlay_material.duplicate()
-		mesh_instance.material_overlay.set_shader_parameter("overlay_texture", overlay_texture_resource)
+		mesh_instance.material_overlay.set_shader_parameter("overlay_texture", atlas_texture_resource)
 		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[i].position)
 		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[i].size)
 		mesh_instance.layers |= 1 << 20  # enable overlay layer 21
 	
-	print("TextureManager: Applied overlay materials to mesh instances")
+	print("OverlayAtlasManager: Applied overlay materials to mesh instances")
 
 
 func _get_self_and_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] = []) -> Array[MeshInstance3D]:
@@ -84,17 +84,17 @@ func _get_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] =
 
 
 func _create_texture() -> void:
-	if overlay_texture_rid.is_valid():
-		if rd.texture_get_format(overlay_texture_rid).width == overlay_texture_size:
-			print("TextureManager: Overlay texture already exists with correct size, skipping creation.")
+	if atlas_texture_rid.is_valid():
+		if rd.texture_get_format(atlas_texture_rid).width == atlas_size:
+			print("OverlayAtlasManager: Overlay texture already exists with correct size, skipping creation.")
 			return
 
-	print("TextureManager: Creating overlay texture of size {0}x{0}".format([overlay_texture_size]))
+	print("OverlayAtlasManager: Creating overlay texture of size {0}x{0}".format([atlas_size]))
 
 	# create texure format
 	var fmt := RDTextureFormat.new()
-	fmt.width = overlay_texture_size
-	fmt.height = overlay_texture_size
+	fmt.width = atlas_size
+	fmt.height = atlas_size
 	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
@@ -103,22 +103,22 @@ func _create_texture() -> void:
 	var view := RDTextureView.new()
 
 	# create texture
-	var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
-	overlay_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
+	var image := Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
+	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 
 func _apply_texture_to_texture_resource() -> void:
 	#create Texture2DRD
-	if not overlay_texture_resource:
-		overlay_texture_resource = Texture2DRD.new()
+	if not atlas_texture_resource:
+		atlas_texture_resource = Texture2DRD.new()
 	
-	overlay_texture_resource.texture_rd_rid = overlay_texture_rid  # handles cleanup of old RID
+	atlas_texture_resource.texture_rd_rid = atlas_texture_rid  # handles cleanup of old RID
 	notify_property_list_changed()
 
 
 func _cleanup_texture() -> void:
-	print("TextureManager: Cleaning up overlay texture")
-	if overlay_texture_resource:
-			overlay_texture_resource.texture_rd_rid = RID()
-	if overlay_texture_rid.is_valid():
-		rd.free_rid(overlay_texture_rid)
+	print("OverlayAtlasManager: Cleaning up overlay texture")
+	if atlas_texture_resource:
+			atlas_texture_resource.texture_rd_rid = RID()
+	if atlas_texture_rid.is_valid():
+		rd.free_rid(atlas_texture_rid)

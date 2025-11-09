@@ -3,10 +3,10 @@ class_name CameraBrush
 extends Node3D
 
 
-@export var texture_manager: TextureManager:
+@export var overlay_atlas_manager: OverlayAtlasManager:
 	set(value):
-		texture_manager = value
-		_get_overlay_texture()
+		overlay_atlas_manager = value
+		_get_atlas_texture()
 
 @export_group("Camera Settings")
 @export var projection: Camera3D.ProjectionType = Camera3D.ProjectionType.PROJECTION_PERSPECTIVE:
@@ -75,7 +75,7 @@ var brush_viewport_uniform_set: RID
 var brush_shape_texture_rid: RID
 var brush_shape_uniform_set: RID
 
-var overlay_texture_uniform_set: RID
+var atlas_texture_uniform_set: RID
 
 var x_groups: int
 var y_groups: int
@@ -85,10 +85,6 @@ func _ready() -> void:
 	rd = RenderingServer.get_rendering_device()
 
 	_setup()
-	
-	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
-	RenderingServer.call_on_render_thread(_get_overlay_texture)
-	_calculate_work_groups()
 
 
 func _process(delta: float) -> void:
@@ -154,7 +150,7 @@ func _setup() -> void:
 
 	#try start
 	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
-	(func(): RenderingServer.call_on_render_thread(_get_overlay_texture)).call_deferred()  # call after SceneTree is fully initialized
+	(func(): RenderingServer.call_on_render_thread(_get_atlas_texture)).call_deferred()  # call after SceneTree is fully initialized
 	_calculate_work_groups()
 
 
@@ -234,30 +230,30 @@ func _create_brush_shape_texture() -> void:
 	brush_shape_uniform_set = rd.uniform_set_create([uniform], shader, 1)
 
 
-func _get_overlay_texture() -> void:
-	if not texture_manager:
+func _get_atlas_texture() -> void:
+	if not overlay_atlas_manager:
 		return
 	
-	if not texture_manager.overlay_texture_rid.is_valid():
+	if not overlay_atlas_manager.atlas_texture_rid.is_valid():
 		return
 
-	# if overlay_texture_uniform_set.is_valid():
-	# 	rd.free_rid(overlay_texture_uniform_set)
-	# 	overlay_texture_uniform_set = RID()
+	# if atlas_texture_uniform_set.is_valid():
+	# 	rd.free_rid(atlas_texture_uniform_set)
+	# 	atlas_texture_uniform_set = RID()
 
 
-	print("CameraBrush: Getting overlay texture")
+	print("CameraBrush: Getting overlay atlas texture")
 
-	var overlay_texture_rid = texture_manager.overlay_texture_rid
+	var atlas_texture_rid = overlay_atlas_manager.atlas_texture_rid
 
-	# output uniform: overlay texture
+	# output uniform: atlas texture
 	var uniform := RDUniform.new()
 	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
 	uniform.binding = 0
-	uniform.add_id(overlay_texture_rid)
+	uniform.add_id(atlas_texture_rid)
 
 	# create uniform set
-	overlay_texture_uniform_set = rd.uniform_set_create([uniform], shader, 2)
+	atlas_texture_uniform_set = rd.uniform_set_create([uniform], shader, 2)
 
 
 func _calculate_work_groups() -> void:
@@ -271,7 +267,7 @@ func _dispatch_compute_shader(delta: float) -> void:
 	if not pipeline.is_valid():
 		return
 	
-	if not (brush_viewport_uniform_set.is_valid() and brush_shape_uniform_set.is_valid() and overlay_texture_uniform_set.is_valid()):
+	if not (brush_viewport_uniform_set.is_valid() and brush_shape_uniform_set.is_valid() and atlas_texture_uniform_set.is_valid()):
 		return
 
 	# prepare push constant
@@ -294,7 +290,7 @@ func _dispatch_compute_shader(delta: float) -> void:
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 	rd.compute_list_bind_uniform_set(compute_list, brush_viewport_uniform_set, 0)
 	rd.compute_list_bind_uniform_set(compute_list, brush_shape_uniform_set, 1)
-	rd.compute_list_bind_uniform_set(compute_list, overlay_texture_uniform_set, 2)
+	rd.compute_list_bind_uniform_set(compute_list, atlas_texture_uniform_set, 2)
 	rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4)
 	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 	rd.compute_list_end()
@@ -314,9 +310,9 @@ func _cleanup_compute_shader() -> void:
 	# 	rd.free_rid(brush_shape_uniform_set)
 	# 	brush_shape_uniform_set = RID()
 	
-	# if overlay_texture_uniform_set.is_valid():
-	# 	rd.free_rid(overlay_texture_uniform_set)
-	# 	overlay_texture_uniform_set = RID()
+	# if atlas_texture_uniform_set.is_valid():
+	# 	rd.free_rid(atlas_texture_uniform_set)
+	# 	atlas_texture_uniform_set = RID()
 
 	if shader.is_valid():
 		rd.free_rid(shader)

@@ -81,11 +81,10 @@ var x_groups: int
 var y_groups: int
 
 
-func _enter_tree() -> void:
+func _ready() -> void:
 	rd = RenderingServer.get_rendering_device()
 
-	if not viewport:
-		_setup()
+	_setup()
 	
 	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
 	RenderingServer.call_on_render_thread(_get_overlay_texture)
@@ -115,8 +114,9 @@ func _validate_property(property: Dictionary) -> void:
 		property.hint_string = "Perspective,Orthogonal"
 
 
-func _exit_tree() -> void:
-	RenderingServer.call_on_render_thread(_cleanup_compute_shader)
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		RenderingServer.call_on_render_thread(_cleanup_compute_shader)
 
 
 func _setup() -> void:
@@ -301,6 +301,7 @@ func _dispatch_compute_shader(delta: float) -> void:
 
 
 func _cleanup_compute_shader() -> void:	
+	print("CameraBrush: Cleaning up compute shader and resources")
 	# if brush_viewport_uniform_set.is_valid():
 	# 	rd.free_rid(brush_viewport_uniform_set)
 	# 	brush_viewport_uniform_set = RID()

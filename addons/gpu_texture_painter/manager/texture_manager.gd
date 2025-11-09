@@ -18,10 +18,9 @@ func _ready() -> void:
 	_apply_texture_to_texture_resource()
 
 
-func _exit_tree() -> void:
-	if overlay_texture_resource:
-		overlay_texture_resource.texture_rd_rid = RID()
-	RenderingServer.call_on_render_thread(_cleanup_texture)
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		RenderingServer.call_on_render_thread(_cleanup_texture)
 
 
 func apply() -> void:
@@ -107,5 +106,8 @@ func _apply_texture_to_texture_resource() -> void:
 
 
 func _cleanup_texture() -> void:
+	print("TextureManager: Cleaning up overlay texture")
+	if overlay_texture_resource:
+			overlay_texture_resource.texture_rd_rid = RID()
 	if overlay_texture_rid.is_valid():
 		rd.free_rid(overlay_texture_rid)

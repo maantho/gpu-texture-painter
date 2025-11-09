@@ -50,6 +50,8 @@ func _construct_atlas_and_apply_materials() -> void:
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
 
+	print("TextureManager: Packed {0} mesh instances into overlay atlas of size {1}x{1}".format([mesh_instances.size(), overlay_texture_size]))
+
 	var overlay_material := ShaderMaterial.new()
 	overlay_material.shader = overlay_shader
 
@@ -60,6 +62,8 @@ func _construct_atlas_and_apply_materials() -> void:
 		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[i].position)
 		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[i].size)
 		mesh_instance.layers |= 1 << 20  # enable overlay layer 21
+	
+	print("TextureManager: Applied overlay materials to mesh instances")
 
 
 func _get_self_and_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] = []) -> Array[MeshInstance3D]:
@@ -80,6 +84,13 @@ func _get_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] =
 
 
 func _create_texture() -> void:
+	if overlay_texture_rid.is_valid():
+		if rd.texture_get_format(overlay_texture_rid).width == overlay_texture_size:
+			print("TextureManager: Overlay texture already exists with correct size, skipping creation.")
+			return
+
+	print("TextureManager: Creating overlay texture of size {0}x{0}".format([overlay_texture_size]))
+
 	# create texure format
 	var fmt := RDTextureFormat.new()
 	fmt.width = overlay_texture_size

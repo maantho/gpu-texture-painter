@@ -54,10 +54,10 @@ mesh = SubResource("PlaneMesh_coq8p")
 transform = Transform3D(1, 0, 0, 0, 0.11353267, 0.99353427, 0, -0.99353427, 0.11353267, 0, 5.037711, 0)
 far = 10.14
 
-[node name="CameraBrush" type="Node3D" parent="." node_paths=PackedStringArray("texture_manager")]
+[node name="CameraBrush" type="Node3D" parent="CameraBrushViewport" node_paths=PackedStringArray("texture_manager")]
 transform = Transform3D(1, 0, 0, 0, 0.001640633, 0.9999986, 0, -0.9999986, 0.001640633, -0.67555344, 1.1521845, 0.8693117)
 script = ExtResource("4_coq8p")
-texture_manager = NodePath("../TextureManager")
+texture_manager = NodePath("../../TextureManager")
 fov = 5.705
 max_distance = 50.0
 resolution = Vector2i(3182, 861)

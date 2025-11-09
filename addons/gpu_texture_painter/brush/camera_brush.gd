@@ -69,14 +69,12 @@ var rd: RenderingDevice
 var shader: RID
 var pipeline: RID
 
-var brush_viewport_texture_rid: RID
 var brush_viewport_uniform_set: RID
 
 #dynamic
 var brush_shape_texture_rid: RID
 var brush_shape_uniform_set: RID
 
-var overlay_texture_rid: RID
 var overlay_texture_uniform_set: RID
 
 var x_groups: int
@@ -174,10 +172,9 @@ func _create_shader_and_pipeline() -> void:
 
 
 func _get_brush_viewport_texture() -> void:
-	if brush_viewport_uniform_set.is_valid():
-		print("free: " + str(brush_viewport_uniform_set))
-		rd.free_rid(brush_viewport_uniform_set)
-		brush_viewport_uniform_set = RID()
+	# if brush_viewport_uniform_set.is_valid():
+	# 	rd.free_rid(brush_viewport_uniform_set)
+	# 	brush_viewport_uniform_set = RID()
 
 	print("CameraBrush: Getting brush viewport texture")
 
@@ -185,7 +182,7 @@ func _get_brush_viewport_texture() -> void:
 	var viewport_texture := viewport.get_texture()
 	var viewport_texture_rid := viewport_texture.get_rid()
 	var viewport_rd_texture_rid := RenderingServer.texture_get_rd_texture(viewport_texture_rid)
-	brush_viewport_texture_rid = viewport_rd_texture_rid
+	var brush_viewport_texture_rid = viewport_rd_texture_rid
 
 	#create uniform
 	var uniform := RDUniform.new()
@@ -195,7 +192,6 @@ func _get_brush_viewport_texture() -> void:
 
 	# create uniform set
 	brush_viewport_uniform_set = rd.uniform_set_create([uniform], shader, 0)
-	print("new: " + str(brush_viewport_uniform_set))
 
 
 
@@ -203,9 +199,9 @@ func _create_brush_shape_texture() -> void:
 	if not brush_shape:
 		return
 
-	if brush_shape_uniform_set.is_valid():
-		rd.free_rid(brush_shape_uniform_set)
-		brush_shape_uniform_set = RID()
+	# if brush_shape_uniform_set.is_valid():
+	# 	rd.free_rid(brush_shape_uniform_set)
+	# 	brush_shape_uniform_set = RID()
 	
 	if brush_shape_texture_rid.is_valid():
 		rd.free_rid(brush_shape_texture_rid)
@@ -244,14 +240,14 @@ func _get_overlay_texture() -> void:
 	if not texture_manager.overlay_texture_rid.is_valid():
 		return
 
-	if overlay_texture_uniform_set.is_valid():
-		rd.free_rid(overlay_texture_uniform_set)
-		overlay_texture_uniform_set = RID()
+	# if overlay_texture_uniform_set.is_valid():
+	# 	rd.free_rid(overlay_texture_uniform_set)
+	# 	overlay_texture_uniform_set = RID()
 
 
 	print("CameraBrush: Getting overlay texture")
 
-	overlay_texture_rid = texture_manager.overlay_texture_rid
+	var overlay_texture_rid = texture_manager.overlay_texture_rid
 
 	# output uniform: overlay texture
 	var uniform := RDUniform.new()
@@ -304,22 +300,21 @@ func _dispatch_compute_shader(delta: float) -> void:
 
 
 func _cleanup_compute_shader() -> void:	
-	if brush_viewport_uniform_set.is_valid():
-		print("free: " + str(brush_viewport_uniform_set))
-		rd.free_rid(brush_viewport_uniform_set)
-		brush_viewport_uniform_set = RID()
+	# if brush_viewport_uniform_set.is_valid():
+	# 	rd.free_rid(brush_viewport_uniform_set)
+	# 	brush_viewport_uniform_set = RID()
 
-	if brush_shape_uniform_set.is_valid():
-		rd.free_rid(brush_shape_uniform_set)
-		brush_shape_uniform_set = RID()
-	
 	if brush_shape_texture_rid.is_valid():
 		rd.free_rid(brush_shape_texture_rid)
 		brush_shape_texture_rid = RID()
 
-	if overlay_texture_uniform_set.is_valid():
-		rd.free_rid(overlay_texture_uniform_set)
-		overlay_texture_uniform_set = RID()
+	# if brush_shape_uniform_set.is_valid():
+	# 	rd.free_rid(brush_shape_uniform_set)
+	# 	brush_shape_uniform_set = RID()
+	
+	# if overlay_texture_uniform_set.is_valid():
+	# 	rd.free_rid(overlay_texture_uniform_set)
+	# 	overlay_texture_uniform_set = RID()
 
 	if shader.is_valid():
 		rd.free_rid(shader)

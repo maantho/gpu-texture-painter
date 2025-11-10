@@ -17,7 +17,15 @@ layout(push_constant, std430) uniform Params {
     float start_bleed_fade;
 } params;
 
-layout(rgba32f, set = 2, binding = 0) uniform restrict image2D overlay_texture;
+layout(rgba32f, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;
+layout(rgba32f, set = 2, binding = 1) uniform restrict image2D overlay_texture_1;
+layout(rgba32f, set = 2, binding = 2) uniform restrict image2D overlay_texture_2;
+layout(rgba32f, set = 2, binding = 3) uniform restrict image2D overlay_texture_3;
+layout(rgba32f, set = 2, binding = 4) uniform restrict image2D overlay_texture_4;
+layout(rgba32f, set = 2, binding = 5) uniform restrict image2D overlay_texture_5;
+layout(rgba32f, set = 2, binding = 6) uniform restrict image2D overlay_texture_6;
+layout(rgba32f, set = 2, binding = 7) uniform restrict image2D overlay_texture_7;
+
 
 // The code we want to execute in each invocation
 void main() {
@@ -58,26 +66,166 @@ void main() {
     ivec2 brush_shape_coords = ivec2(vec2(brush_texture_coords) / vec2(imageSize(brush_texture)) * vec2(imageSize(brush_shape)));
     vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_shape, brush_shape_coords).r * params.delta * params.brush_color.a * distance_fade);
 
-    ivec2 overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture)));
-    
     // get index in bit 24-25 and bit 31
     uint atlas_index = (b_bits >> uint(31 - 2) & 0x4u) | (b_bits >> uint(24) & 0x3u);
 
-    for (int y = -distance_bleed; y <= distance_bleed; y++) {
-        for (int x = -distance_bleed; x <= distance_bleed; x++) {
-            ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
-            vec4 existing_color = imageLoad(overlay_texture, bleed_coords);
-            float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
-            vec3 out_color;
-            if (out_alpha > 0.0f) {
-                out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+    // select overlay texture
+    switch (atlas_index) {
+        case 0:
+            ivec2 overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_0)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_0, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_0, bleed_coords, vec4(out_color, out_alpha));
+                }
             }
-            else {
-                out_color = vec3(0.0f);
+            break;
+        case 1:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_1)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_1, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_1, bleed_coords, vec4(out_color, out_alpha));
+                }
             }
-            imageStore(overlay_texture, bleed_coords, vec4(out_color, out_alpha));
-        }
+            break;
+        case 2:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_2)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_2, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_2, bleed_coords, vec4(out_color, out_alpha));
+                }
+            }
+            break;
+        case 3:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_3)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_3, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_3, bleed_coords, vec4(out_color, out_alpha));
+                }
+            }
+            break;
+        case 4:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_4)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_4, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_4, bleed_coords, vec4(out_color, out_alpha));
+                }
+            }
+            break;
+        case 5:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_5)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_5, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_5, bleed_coords, vec4(out_color, out_alpha));
+                }
+            }
+            break;
+        case 6:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_6)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_6, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_6, bleed_coords, vec4(out_color, out_alpha));
+                }
+            }
+            break;
+        case 7:
+            overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture_7)));
+    
+            for (int y = -distance_bleed; y <= distance_bleed; y++) {
+                for (int x = -distance_bleed; x <= distance_bleed; x++) {
+                    ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y);
+                    vec4 existing_color = imageLoad(overlay_texture_7, bleed_coords);
+                    float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a);
+                    vec3 out_color;
+                    if (out_alpha > 0.0f) {
+                        out_color = (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha;
+                    }
+                    else {
+                        out_color = vec3(0.0f);
+                    }
+                    imageStore(overlay_texture_7, bleed_coords, vec4(out_color, out_alpha));
+                }
+            }
+            break;
     }
+
+
 
     /*
     vec4 existing_color = imageLoad(overlay_texture, overlay_texture_coords);

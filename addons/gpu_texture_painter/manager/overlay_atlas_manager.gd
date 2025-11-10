@@ -22,7 +22,7 @@ func _ready() -> void:
 
 	rd = RenderingServer.get_rendering_device()
 	RenderingServer.call_on_render_thread(_create_texture)
-	_apply_texture_to_texture_resource()
+	_apply_texture_to_texture_resource(false)
 
 
 func _notification(what):
@@ -32,7 +32,7 @@ func _notification(what):
 
 func apply() -> void:
 	RenderingServer.call_on_render_thread(_create_texture)
-	_apply_texture_to_texture_resource()
+	_apply_texture_to_texture_resource(true)
 	_construct_atlas_and_apply_materials()
 
 
@@ -136,12 +136,12 @@ func _create_texture() -> void:
 	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 	# notify brushes
-	get_tree().call_group(CameraBrush.GROUP_NAME, "set_atlas_texture", atlas_texture_rid)
+	get_tree().call_group(CameraBrush.GROUP_NAME, "get_atlas_textures")
 
 
-func _apply_texture_to_texture_resource() -> void:
+func _apply_texture_to_texture_resource(force_recreation: bool) -> void:
 	#create Texture2DRD
-	if not atlas_texture_resource:
+	if not atlas_texture_resource or force_recreation:
 		atlas_texture_resource = Texture2DRD.new()
 	
 	atlas_texture_resource.texture_rd_rid = atlas_texture_rid  # handles cleanup of old RID

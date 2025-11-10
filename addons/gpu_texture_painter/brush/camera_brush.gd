@@ -65,6 +65,8 @@ var pipeline: RID
 
 var brush_viewport_uniform_set: RID
 
+var dummy_texture_rid: RID
+
 #dynamic
 var brush_shape_texture_rid: RID
 var brush_shape_uniform_set: RID
@@ -147,7 +149,9 @@ func _setup() -> void:
 
 	#try start
 	RenderingServer.call_on_render_thread(_create_brush_shape_texture)
-	(func(): RenderingServer.call_on_render_thread(set_atlas_texture)).call_deferred()  # call after SceneTree is fully initialized
+
+	RenderingServer.call_on_render_thread(_create_dummy_texture)
+	(func(): RenderingServer.call_on_render_thread(get_atlas_textures)).call_deferred()  # call after SceneTree is fully initialized
 	_calculate_work_groups()
 
 
@@ -227,40 +231,55 @@ func _create_brush_shape_texture() -> void:
 	brush_shape_uniform_set = rd.uniform_set_create([uniform], shader, 1)
 
 
-func set_atlas_texture(texture_rid: RID = RID()) -> void:
+func _create_dummy_texture() -> void:
+	if dummy_texture_rid.is_valid():
+		rd.free_rid(dummy_texture_rid)
+		dummy_texture_rid = RID()
 
-	var atlas_texture_rid: RID
+	var fmt := RDTextureFormat.new()
+	fmt.width = 1
+	fmt.height = 1
+	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
 
-	if texture_rid.is_valid():
-		# use provided texture RID (Called by Manager)
-		atlas_texture_rid = texture_rid
-		print("CameraBrush: Setting overlay atlas texture provided by manager")
+	# create texture view
+	var view := RDTextureView.new()
 
-	else:
-		# internal call to get from manager
-		var all_managers = get_tree().get_nodes_in_group(OverlayAtlasManager.GROUP_NAME)
-		if all_managers.is_empty():
-			return
-
-		var overlay_atlas_manager := all_managers[0] as OverlayAtlasManager
-		if not overlay_atlas_manager:
-			return
-		if not overlay_atlas_manager.atlas_texture_rid.is_valid():
-			return
-
-		atlas_texture_rid = overlay_atlas_manager.atlas_texture_rid
-		print("CameraBrush: Setting overlay atlas texture by searching managers")
+	# create texture
+	var image := Image.create(1, 1, false, Image.FORMAT_RGBAF)
+	dummy_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 
+func get_atlas_textures() -> void:
+	var uniform_array: Array[RDUniform] = []
+	uniform_array.resize(8)
 
-	# output uniform: atlas texture
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform.binding = 0
-	uniform.add_id(atlas_texture_rid)
+	var all_managers := get_tree().get_nodes_in_group(OverlayAtlasManager.GROUP_NAME)
+		
+	if all_managers.is_empty():
+		return
 
+	for manager: OverlayAtlasManager in all_managers:
+		if manager == null:
+			continue
+
+		var uniform := RDUniform.new()
+		uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+		uniform.binding = manager.atlas_index
+		uniform.add_id(manager.atlas_texture_rid)
+		uniform_array[manager.atlas_index] = uniform
+
+	for i: int in range(8):
+		if uniform_array[i] == null:
+			var uniform := RDUniform.new()
+			uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+			uniform.binding = i
+			uniform.add_id(dummy_texture_rid)
+			uniform_array[i] = uniform
+	
 	# create uniform set
-	atlas_texture_uniform_set = rd.uniform_set_create([uniform], shader, 2)
+	atlas_texture_uniform_set = rd.uniform_set_create(uniform_array, shader, 2)
 
 
 func _calculate_work_groups() -> void:
@@ -320,6 +339,10 @@ func _cleanup_compute_shader() -> void:
 	# if atlas_texture_uniform_set.is_valid():
 	# 	rd.free_rid(atlas_texture_uniform_set)
 	# 	atlas_texture_uniform_set = RID()
+
+	if dummy_texture_rid.is_valid():
+		rd.free_rid(dummy_texture_rid)
+		dummy_texture_rid = RID()
 
 	if shader.is_valid():
 		rd.free_rid(shader)

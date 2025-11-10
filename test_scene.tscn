@@ -1,52 +1,40 @@
-[gd_scene load_steps=8 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene load_steps=7 format=3 uid="uid://gf5fmdn7810t"]
 
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/default_overlay.gdshader" id="1_ia1lp"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="1_uhqqe"]
-[ext_resource type="PackedScene" uid="uid://be0n8acdsbi8p" path="res://addons/gpu_texture_painter/brush/camera_brush_viewport.tscn" id="4_2nij2"]
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="4_coq8p"]
 
-[sub_resource type="Texture2DRD" id="Texture2DRD_coq8p"]
+[sub_resource type="Texture2DRD" id="Texture2DRD_sasra"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
 render_priority = 0
 shader = ExtResource("1_ia1lp")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_coq8p")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_sasra")
 shader_parameter/position_in_atlas = Vector2(0, 0)
-shader_parameter/size_in_atlas = Vector2(1, 0.8181818)
+shader_parameter/size_in_atlas = Vector2(0.8947368, 1)
 shader_parameter/atlas_index = 0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_uhqqe"]
-lightmap_size_hint = Vector2i(33, 27)
+[sub_resource type="CylinderMesh" id="CylinderMesh_2nij2"]
+lightmap_size_hint = Vector2i(17, 19)
 add_uv2 = true
-size = Vector2(6.305, 5.055)
 
 [node name="Node3D" type="Node3D"]
 
-[node name="OverlayAtlasManager" type="Node" parent="."]
-script = ExtResource("1_uhqqe")
-atlas_size = 1025
-atlas_texture_resource = SubResource("Texture2DRD_coq8p")
-metadata/_custom_type_script = "uid://nplvtv2bi7u0"
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.13254, 4.7683716e-07, 0.67426944)
-layers = 1048577
-material_overlay = SubResource("ShaderMaterial_coq8p")
-mesh = SubResource("PlaneMesh_uhqqe")
-skeleton = NodePath("")
-
-[node name="CameraBrushViewport" parent="." instance=ExtResource("4_2nij2")]
-
-[node name="Camera3D" parent="CameraBrushViewport" index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.11353267, 0.99353427, 0, -0.99353427, 0.11353267, -0.858973, 5.9844437, 3.8434784)
-far = 10.14
-
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.001640633, 0.9999986, 0, -0.9999986, 0.001640633, -5.9797482, 1.8766704, 0.62155324)
+transform = Transform3D(0.12025578, -0.17893288, 0.9764844, 0.012287243, 0.98381555, 0.178763, -0.992667, -0.009499002, 0.12050811, 3.7734103, -0.07294488, 0.6254488)
 script = ExtResource("4_coq8p")
 fov = 5.705
 max_distance = 10.0
-resolution = Vector2i(3182, 861)
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
-[editable path="CameraBrushViewport"]
+[node name="Node" type="Node" parent="."]
+
+[node name="OverlayAtlasManager" type="Node" parent="Node"]
+script = ExtResource("1_uhqqe")
+atlas_texture_resource = SubResource("Texture2DRD_sasra")
+metadata/_custom_type_script = "uid://nplvtv2bi7u0"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node/OverlayAtlasManager"]
+layers = 1048577
+material_overlay = SubResource("ShaderMaterial_coq8p")
+mesh = SubResource("CylinderMesh_2nij2")

@@ -29,11 +29,15 @@ void main() {
 	}
 
     vec4 brush_texture_color = imageLoad(brush_texture, brush_texture_coords);
+    
+    uint b_bits = floatBitsToUint(brush_texture_color.b);
+    // get distance in 13-23 -> 11 bits truncated
+    float distance = unpackHalf2x16(b_bits >> uint(13 - 5) & 0xFFE0u).x;
+    float distance_value = clamp(abs(distance) / params.max_distance, 0.0f, 1.0f);
 
     //distance fade
     float distance_fade = 1.0f;
     if (params.start_distance_fade < 1.0f) {
-        float distance_value = clamp(abs(brush_texture_color.b) / params.max_distance, 0.0f, 1.0f);
         if (distance_value >= params.start_distance_fade) {
             distance_fade = 1.0f - ((distance_value - params.start_distance_fade) / (1.0f - params.start_distance_fade));
         }
@@ -42,7 +46,6 @@ void main() {
     //distance bleed
     int distance_bleed = int(params.bleed);
     if (params.bleed > 0.0f && params.start_bleed_fade < 1.0f) {
-        float distance_value = clamp(abs(brush_texture_color.b) / params.max_distance, 0.0f, 1.0f);
         if (distance_value >= params.start_bleed_fade) {
             float bleed_factor = (distance_value - params.start_bleed_fade) / (1.0f - params.start_bleed_fade);
             distance_bleed = int(params.bleed * bleed_factor);
@@ -56,6 +59,9 @@ void main() {
     vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_shape, brush_shape_coords).r * params.delta * params.brush_color.a * distance_fade);
 
     ivec2 overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(overlay_texture)));
+    
+    // get index in bit 24-25 and bit 31
+    uint atlas_index = (b_bits >> uint(31 - 2) & 0x4u) | (b_bits >> uint(24) & 0x3u);
 
     for (int y = -distance_bleed; y <= distance_bleed; y++) {
         for (int x = -distance_bleed; x <= distance_bleed; x++) {
@@ -85,4 +91,5 @@ void main() {
     }
     imageStore(overlay_texture, overlay_texture_coords, vec4(out_color, out_alpha));
     */
+
 }

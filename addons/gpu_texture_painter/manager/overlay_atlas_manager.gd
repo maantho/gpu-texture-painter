@@ -6,6 +6,8 @@ extends Node
 var atlas_texture_rid: RID = RID()
 @export_storage var atlas_texture_resource: Texture2DRD = null
 
+@export_storage var atlas_index: int = 0
+
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
 
 @export_tool_button("Apply") var apply_action = apply
@@ -16,6 +18,7 @@ const  GROUP_NAME := "overlay_atlas_managers"
 
 func _ready() -> void:
 	add_to_group(GROUP_NAME)
+	_get_atlas_index()
 
 	rd = RenderingServer.get_rendering_device()
 	RenderingServer.call_on_render_thread(_create_texture)
@@ -31,6 +34,27 @@ func apply() -> void:
 	RenderingServer.call_on_render_thread(_create_texture)
 	_apply_texture_to_texture_resource()
 	_construct_atlas_and_apply_materials()
+
+
+func _get_atlas_index() -> void:
+		var possible_index: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7]
+
+		var all_managers := get_tree().get_nodes_in_group(GROUP_NAME)
+		
+		if all_managers.is_empty():
+			return
+
+		for manager: OverlayAtlasManager in all_managers:
+			if manager == null or manager == self:
+				continue
+			possible_index.erase(manager.atlas_index)
+		
+		if possible_index.is_empty():
+			push_error("OverlayAtlasManager: No available atlas indices left! Maximum of 8 overlay atlases reached.")
+			return
+		
+		atlas_index = possible_index[0]
+		print("OverlayAtlasManager: Assigned atlas index {0}".format([atlas_index]))
 
 
 func _construct_atlas_and_apply_materials() -> void:
@@ -65,6 +89,7 @@ func _construct_atlas_and_apply_materials() -> void:
 		mesh_instance.material_overlay.set_shader_parameter("overlay_texture", atlas_texture_resource)
 		mesh_instance.material_overlay.set_shader_parameter("position_in_atlas", packed_rects[i].position)
 		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[i].size)
+		mesh_instance.material_overlay.set_shader_parameter("atlas_index", atlas_index)
 		mesh_instance.layers |= 1 << 20  # enable overlay layer 21
 	
 	print("OverlayAtlasManager: Applied overlay materials to mesh instances")

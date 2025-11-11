@@ -2,7 +2,9 @@
 class_name CameraBrush
 extends Node3D
 
-@export_group("Camera Settings")
+## Corresponds to the projection value of the underlying camera.
+## Orthogonal projection will keep the size constant. E.g. a pencil.
+## Perspective projection will make the brush size vary with distance. E.g. a spray can.
 @export var projection: Camera3D.ProjectionType = Camera3D.ProjectionType.PROJECTION_PERSPECTIVE:
 	set(value):
 		projection = value
@@ -10,18 +12,21 @@ extends Node3D
 		if camera:
 			camera.projection = projection
 
+## Corresponds to the fov value of the underlying camera
 @export var fov: float = 5.0:
 	set(value):
 		fov = clampf(value, 0.1, 179.0)
 		if camera:
 			camera.fov = fov
 
+## Corresponds to the size value of the underlying camera
 @export var size: float = 0.5:
 	set(value):
 		size = maxf(value, 0.01)
 		if camera:
 			camera.size = size
 
+## Corresponds to the far value of the underlying camera
 @export var max_distance: float = 1000.0:
 	set(value):
 		max_distance = value
@@ -29,12 +34,28 @@ extends Node3D
 			max_distance = maxf(value, camera.near + 0.01)
 			camera.far = max_distance
 
-@export_group("Render Settings")
+# supplied for each invocation
+## At which distance the brush starts to fade out (1 = at max_distance / no fade)
+@export_range(0, 1, 0.01) var start_distance_fade: float = 1.0
+
+#supplied for each invocation
+## How many pixels the brush bleeds at every point in the overlay atlas textures.
+## Bleed may be necessary at low viewport resolutions to avoid holes.
+@export var bleed: int = 0
+
+# supplied for each invocation
+## At which distance the bleed effect starts to fade in (1 = at max_distance / constant bleed)
+@export_range(0, 1, 0.01) var start_bleed_fade: float = 1.0
+
+## The shape of the brush used for painting.
+## Must be an Image with FORMAT_RGBAF format. Channel R is used as brush opacity.
 @export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
 	set(value):
 		brush_shape = value
 		RenderingServer.call_on_render_thread(_create_brush_shape_texture)
 
+## The resolution of the brush viewport texture.
+## Higher resolutions reduce holes in the overlay.
 @export var resolution: Vector2i = Vector2i(256, 256):
 	set(value):
 		resolution = Vector2i(maxi(value.x, 1), maxi(value.y, 1))
@@ -43,14 +64,11 @@ extends Node3D
 			viewport.size = resolution
 			RenderingServer.call_on_render_thread(_get_brush_viewport_texture)
 
+## The color used for painting.
 @export var color: Color = Color.ORANGE
 
-@export var bleed: int = 0
-@export_range(0, 1, 0.01) var start_bleed_fade: float = 1.0
-
-@export_range(0, 1, 0.01) var start_distance_fade: float = 1.0
-
-@export var drawing: bool = true
+## Whether the brush is currently drawing.
+@export var drawing: bool = false
 
 
 var viewport: SubViewport

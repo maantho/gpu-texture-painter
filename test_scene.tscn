@@ -21,11 +21,11 @@ add_uv2 = true
 [node name="Node3D" type="Node3D"]
 
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(0.103416614, -0.5829065, 0.8059313, 0.0625894, 0.8124839, 0.5796143, -0.992667, -0.009499001, 0.12050812, 3.1239097, 2.4959543, 0.6157665)
+transform = Transform3D(0.103416614, -0.5829065, 0.8059313, 0.0625894, 0.8124839, 0.5796143, -0.992667, -0.009499001, 0.12050812, 1.2791244, 0.8537087, 0.1150257)
 script = ExtResource("4_coq8p")
-projection = 1
 max_distance = 10.0
-color = Color(0.56078434, 0.5686275, 0.5882353, 1)
+color = Color(0.8684467, 0.6165205, 0.99633807, 1)
+drawing = true
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
 [node name="Node" type="Node" parent="."]
@@ -40,3 +40,7 @@ skeleton = NodePath("")
 script = ExtResource("3_sasra")
 atlas_texture_resource = SubResource("Texture2DRD_coq8p")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.1034166, -0.5829064, 0.80593115, 0.06258939, 0.8124838, 0.5796143, -0.9926669, -0.009498992, 0.12050807, 3.1239097, 3.143885, 1.2904968)
+projection = 1

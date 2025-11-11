@@ -22,16 +22,16 @@ void fragment() {
 		// unchanged bit ids: 31(sign), 23-25(exponent), 13-22(mantissa)
 
 		// needs to be in exponent form to survive 16bit float conversion
-		uint exponential_bit = 1u << 30u; 
-		
+		uint exponential_bit = 1u << 30u;
+
 		// save distance in 13-23 -> 11 bits truncated
 		float distance = -VERTEX.z;
 		uint distance_bits = (packHalf2x16(vec2(distance, 0)) & 0xFFE0u) << uint(13 - 5);
-		
+
 		// save index in sign bit and exponent bits
 		uint index_sign_bit = (atlas_index & 0x4u) << uint(31 - 2); // in sign bit 31
 		uint index_exp_bits = (atlas_index & 0x3u) << 24u; // in exponent bits 24-25
-		
+
 		// combine bits into B Channel
 		float b = uintBitsToFloat(exponential_bit | distance_bits | index_sign_bit | index_exp_bits);
 

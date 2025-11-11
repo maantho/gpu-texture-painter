@@ -75,7 +75,7 @@ void main() {
             float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a); \
             vec3 out_color = (out_alpha > 0.0f) ? \
                 (brush_color.rgb * brush_color.a + existing_color.rgb * existing_color.a * (1.0f - brush_color.a)) / out_alpha : \
-                vec3(0.0f); \
+                vec3(brush_color.rgb); \
             imageStore(tex, bleed_coords, vec4(out_color, out_alpha)); \
         } \
     } } 

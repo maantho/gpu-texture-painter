@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://b6knnm8h3nhpi"
+path="res://.godot/imported/smooth_brush_shape.exr-d566577165903a169a929ab146c87836.image"
+
+[deps]
+
+source_file="res://addons/gpu_texture_painter/brush_shapes/smooth_brush_shape.exr"
+dest_files=["res://.godot/imported/smooth_brush_shape.exr-d566577165903a169a929ab146c87836.image"]
+
+[params]
+

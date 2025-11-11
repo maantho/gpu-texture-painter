@@ -1,15 +1,15 @@
 [gd_scene load_steps=7 format=3 uid="uid://gf5fmdn7810t"]
 
-[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_materials/default_overlay.gdshader" id="1_ia1lp"]
-[ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="1_uhqqe"]
+[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="1_ia1lp"]
+[ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_sasra"]
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="4_coq8p"]
 
-[sub_resource type="Texture2DRD" id="Texture2DRD_sasra"]
+[sub_resource type="Texture2DRD" id="Texture2DRD_coq8p"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2nij2"]
 render_priority = 0
 shader = ExtResource("1_ia1lp")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_sasra")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_coq8p")
 shader_parameter/position_in_atlas = Vector2(0, 0)
 shader_parameter/size_in_atlas = Vector2(0.8947368, 1)
 shader_parameter/atlas_index = 0
@@ -21,20 +21,22 @@ add_uv2 = true
 [node name="Node3D" type="Node3D"]
 
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(0.12025578, -0.17893288, 0.9764844, 0.012287243, 0.98381555, 0.178763, -0.992667, -0.009499002, 0.12050811, 1.6056509, 0.7330599, -0.035349846)
+transform = Transform3D(0.103416614, -0.5829065, 0.8059313, 0.0625894, 0.8124839, 0.5796143, -0.992667, -0.009499001, 0.12050812, 3.1239097, 2.4959543, 0.6157665)
 script = ExtResource("4_coq8p")
-fov = 5.705
+projection = 1
 max_distance = 10.0
+color = Color(0.56078434, 0.5686275, 0.5882353, 1)
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
 [node name="Node" type="Node" parent="."]
 
-[node name="OverlayAtlasManager" type="Node" parent="Node"]
-script = ExtResource("1_uhqqe")
-atlas_texture_resource = SubResource("Texture2DRD_sasra")
-metadata/_custom_type_script = "uid://nplvtv2bi7u0"
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node/OverlayAtlasManager"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 layers = 1048577
-material_overlay = SubResource("ShaderMaterial_coq8p")
+material_overlay = SubResource("ShaderMaterial_2nij2")
 mesh = SubResource("CylinderMesh_2nij2")
+skeleton = NodePath("")
+
+[node name="OverlayAtlasManager" type="Node" parent="."]
+script = ExtResource("3_sasra")
+atlas_texture_resource = SubResource("Texture2DRD_coq8p")
+metadata/_custom_type_script = "uid://nplvtv2bi7u0"

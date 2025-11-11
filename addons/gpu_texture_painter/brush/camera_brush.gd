@@ -231,7 +231,7 @@ func _create_brush_shape_texture() -> void:
 	fmt.height = brush_shape.get_height()
 	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
 
 	# create texture view
 	var view := RDTextureView.new()
@@ -259,7 +259,7 @@ func _create_dummy_texture() -> void:
 	fmt.height = 1
 	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
 
 	# create texture view
 	var view := RDTextureView.new()

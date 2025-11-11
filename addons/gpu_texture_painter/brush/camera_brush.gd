@@ -39,13 +39,15 @@ extends Node3D
 @export_range(0, 1, 0.01) var start_distance_fade: float = 1.0
 
 #supplied for each invocation
-## How many pixels the brush bleeds at every point in the overlay atlas textures.
+## How many pixels the brush bleeds at every point in the overlay atlas textures, if the mesh is closest to the brush.
+## If min_bleed and max_bleed are the same, bleed is constant.
 ## Bleed may be necessary at low viewport resolutions to avoid holes.
-@export var bleed: int = 0
+@export var min_bleed: int = 0
 
-# supplied for each invocation
-## At which distance the bleed effect starts to fade in (1 = at max_distance / constant bleed)
-@export_range(0, 1, 0.01) var start_bleed_fade: float = 1.0
+#supplied for each invocation
+## How many pixels the brush bleeds at every point in the overlay atlas textures, if the mesh is at max distance from the brush.
+## Bleed may be necessary at low viewport resolutions to avoid holes.
+@export var max_bleed: int = 0
 
 ## The shape of the brush used for painting.
 ## Must be an Image with FORMAT_RGBAF format. Channel R is used as brush opacity.
@@ -324,8 +326,8 @@ func _dispatch_compute_shader(delta: float) -> void:
 	push_constant.push_back(delta * 100)  # need 0.01 seconds to draw full opacity
 	push_constant.push_back(max_distance)
 	push_constant.push_back(start_distance_fade)
-	push_constant.push_back(float(bleed))
-	push_constant.push_back(start_bleed_fade)
+	push_constant.push_back(float(min_bleed))
+	push_constant.push_back(float(max_bleed))
 	push_constant.push_back(0.0)
 	push_constant.push_back(0.0)
 	push_constant.push_back(0.0)

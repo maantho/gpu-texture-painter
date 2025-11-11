@@ -21,9 +21,10 @@ add_uv2 = true
 [node name="Node3D" type="Node3D"]
 
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(0.103416614, -0.5829065, 0.8059313, 0.0625894, 0.8124839, 0.5796143, -0.992667, -0.009499001, 0.12050812, 1.2791244, 0.8537087, 0.1150257)
+transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, -1.0126584, 6.3913827, 0.8851342)
 script = ExtResource("4_coq8p")
 max_distance = 10.0
+resolution = Vector2i(10, 10)
 color = Color(0.8684467, 0.6165205, 0.99633807, 1)
 drawing = true
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"

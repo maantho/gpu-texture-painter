@@ -13,8 +13,8 @@ layout(push_constant, std430) uniform Params {
     float delta;
     float max_distance;
     float start_distance_fade;
-    float bleed;
-    float start_bleed_fade;
+    float min_bleed;
+    float max_bleed;
 } params;
 
 layout(rgba32f, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;
@@ -52,15 +52,9 @@ void main() {
     }
 
     //distance bleed
-    int distance_bleed = int(params.bleed);
-    if (params.bleed > 0.0f && params.start_bleed_fade < 1.0f) {
-        if (distance_value >= params.start_bleed_fade) {
-            float bleed_factor = (distance_value - params.start_bleed_fade) / (1.0f - params.start_bleed_fade);
-            distance_bleed = int(params.bleed * bleed_factor);
-        }
-        else {
-            distance_bleed = 0;
-        }
+    int bleed = int(params.max_bleed);
+    if (params.max_bleed > 0.0f && params.min_bleed < params.max_bleed) {
+        bleed = int(mix(params.min_bleed, params.max_bleed, distance_value));
     }
 
     ivec2 brush_shape_coords = ivec2(vec2(brush_texture_coords) / vec2(imageSize(brush_texture)) * vec2(imageSize(brush_shape)));
@@ -68,8 +62,8 @@ void main() {
 
 #define PROCESS_TEXTURE(tex) { \
     ivec2 overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(tex))); \
-    for (int y = -distance_bleed; y <= distance_bleed; y++) { \
-        for (int x = -distance_bleed; x <= distance_bleed; x++) { \
+    for (int y = -bleed; y <= bleed; y++) { \
+        for (int x = -bleed; x <= bleed; x++) { \
             ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y); \
             vec4 existing_color = imageLoad(tex, bleed_coords); \
             float out_alpha = brush_color.a + existing_color.a * (1.0f - brush_color.a); \

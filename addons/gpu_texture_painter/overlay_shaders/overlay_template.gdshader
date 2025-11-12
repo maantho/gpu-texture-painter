@@ -14,7 +14,7 @@ void fragment() {
 
 	bool is_camera_brush = (CAMERA_VISIBLE_LAYERS & (1u << uint(20))) != 0u;
     if(is_camera_brush){
-		// This code is executed if the mesh is rendered by a camera brush. Check default_overlay.gdshader
+		// This code is executed if the mesh is rendered by a camera brush. See default_overlay.gdshader
 		uint exponential_bit = 1u << 30u;
 		float distance = -VERTEX.z;
 		uint distance_bits = (packHalf2x16(vec2(distance, 0)) & 0xFFE0u) << uint(13 - 5);
@@ -26,8 +26,7 @@ void fragment() {
 	else{
 		// This code is executed for normal cameras.
 		// Insert your code here!
-	
-	
+		
 	}
 }
 

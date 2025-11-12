@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ce1j3jc5khgji"
-path="res://.godot/imported/camera_brush_inkscape.svg-a481be7f257626e88a6535d585e541b5.ctex"
+path="res://.godot/imported/camera_brush_inkscape.svg-9b8528a0b53200e44d78bc10a7c740d4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://camera_brush_inkscape.svg"
-dest_files=["res://.godot/imported/camera_brush_inkscape.svg-a481be7f257626e88a6535d585e541b5.ctex"]
+source_file="res://misc/camera_brush_inkscape.svg"
+dest_files=["res://.godot/imported/camera_brush_inkscape.svg-9b8528a0b53200e44d78bc10a7c740d4.ctex"]
 
 [params]
 

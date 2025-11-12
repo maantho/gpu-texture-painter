@@ -1,14 +1,14 @@
 [gd_scene load_steps=7 format=3 uid="uid://gf5fmdn7810t"]
 
-[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="1_ia1lp"]
-[ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_sasra"]
-[ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="4_coq8p"]
+[ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="1_u3cau"]
+[ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="2_fgal4"]
+[ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_egkiw"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_sasra"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
 render_priority = 0
-shader = ExtResource("1_ia1lp")
+shader = ExtResource("2_fgal4")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_sasra")
 shader_parameter/position_in_atlas = Vector2(0, 0)
 shader_parameter/size_in_atlas = Vector2(0.8947368, 1)
@@ -22,7 +22,7 @@ add_uv2 = true
 
 [node name="CameraBrush" type="Node3D" parent="."]
 transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, -0.69687414, 6.391383, 1.0147493)
-script = ExtResource("4_coq8p")
+script = ExtResource("1_u3cau")
 color = Color(0.8684467, 0.6165205, 0.99633807, 1)
 drawing = true
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
@@ -42,6 +42,6 @@ projection = 1
 
 [node name="OverlayAtlasManager" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.9612472)
-script = ExtResource("3_sasra")
+script = ExtResource("3_egkiw")
 atlas_texture_resource = SubResource("Texture2DRD_sasra")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"

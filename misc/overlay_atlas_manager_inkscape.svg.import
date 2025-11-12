@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cig6y1mpjvd1q"
-path="res://.godot/imported/overlay_atlas_manager_inkscape.svg-f1414ce9dff868f8fb31b1090e698afa.ctex"
+path="res://.godot/imported/overlay_atlas_manager_inkscape.svg-f0b5661b5f1fdee7f34e9788eb15fb84.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://overlay_atlas_manager_inkscape.svg"
-dest_files=["res://.godot/imported/overlay_atlas_manager_inkscape.svg-f1414ce9dff868f8fb31b1090e698afa.ctex"]
+source_file="res://misc/overlay_atlas_manager_inkscape.svg"
+dest_files=["res://.godot/imported/overlay_atlas_manager_inkscape.svg-f0b5661b5f1fdee7f34e9788eb15fb84.ctex"]
 
 [params]
 

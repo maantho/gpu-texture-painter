@@ -21,7 +21,7 @@ add_uv2 = true
 [node name="Node3D" type="Node3D"]
 
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, -1.0126584, 6.3913827, 0.8851342)
+transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, -1.2214019, 6.391383, 0.4381361)
 script = ExtResource("4_coq8p")
 max_distance = 10.0
 resolution = Vector2i(10, 10)

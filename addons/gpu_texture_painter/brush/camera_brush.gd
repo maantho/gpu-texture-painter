@@ -1,4 +1,5 @@
 @tool
+@icon("uid://ban43kgeaq7gv")
 class_name CameraBrush
 extends Node3D
 

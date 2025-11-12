@@ -1,4 +1,5 @@
 @tool
+@icon("uid://c1jgnh1db12t")
 class_name OverlayAtlasManager
 extends Node
 

@@ -1,17 +1,25 @@
 @tool
 @icon("uid://c1jgnh1db12t")
 class_name OverlayAtlasManager
-extends Node
+extends Node3D
 
-@export_range(0, 8192) var atlas_size: int = 1024
+## Size of the overlay atlas texture (width and height in pixels).
+@export_range(0, 8192) var atlas_size: int = 1024:
+	set(value):
+		atlas_size = value
+		RenderingServer.call_on_render_thread(_create_texture)
+		_apply_texture_to_texture_resource(false)
+		
 var atlas_texture_rid: RID = RID()
 @export_storage var atlas_texture_resource: Texture2DRD = null
 
 @export_storage var atlas_index: int = 0
 
+## Shader used for overlay materials.
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
 
-@export_tool_button("Apply") var apply_action = apply
+## Calculates the atlas and applies the overlay materials to all MeshInstance3D children & siblings.
+@export_tool_button("Generate atlas and apply shader") var apply_action = apply
 
 var rd: RenderingDevice
 

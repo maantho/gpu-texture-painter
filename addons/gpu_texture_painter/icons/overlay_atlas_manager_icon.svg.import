@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1jgnh1db12t"
-path="res://.godot/imported/overlay_atlas_manager_icon.svg-d250430003038c623e4d2fc1517f97c5.ctex"
+path="res://.godot/imported/overlay_atlas_manager_icon.svg-9189e21995582fbb78594cdebe32b61a.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/gpu_texture_painter/manager/overlay_atlas_manager_icon.svg"
-dest_files=["res://.godot/imported/overlay_atlas_manager_icon.svg-d250430003038c623e4d2fc1517f97c5.ctex"]
+source_file="res://addons/gpu_texture_painter/icons/overlay_atlas_manager_icon.svg"
+dest_files=["res://.godot/imported/overlay_atlas_manager_icon.svg-9189e21995582fbb78594cdebe32b61a.ctex"]
 
 [params]
 

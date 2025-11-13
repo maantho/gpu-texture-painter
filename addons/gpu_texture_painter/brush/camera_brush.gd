@@ -177,6 +177,9 @@ func _setup() -> void:
 
 
 func _create_shader_and_pipeline() -> void:
+	if not rd:
+		return
+
 	if shader.is_valid():
 		rd.free_rid(shader)
 		shader = RID()
@@ -191,9 +194,11 @@ func _create_shader_and_pipeline() -> void:
 
 
 func _get_brush_viewport_texture() -> void:
-	# if brush_viewport_uniform_set.is_valid():
-	# 	rd.free_rid(brush_viewport_uniform_set)
-	# 	brush_viewport_uniform_set = RID()
+	if not viewport:
+		return
+
+	if not rd:
+		return
 
 	print("CameraBrush: Getting brush viewport texture")
 
@@ -216,6 +221,9 @@ func _get_brush_viewport_texture() -> void:
 
 func _create_brush_shape_texture() -> void:
 	if not brush_shape:
+		return
+	
+	if not rd:
 		return
 
 	# if brush_shape_uniform_set.is_valid():
@@ -253,6 +261,9 @@ func _create_brush_shape_texture() -> void:
 
 
 func _create_dummy_texture() -> void:
+	if not rd:
+		return
+
 	if dummy_texture_rid.is_valid():
 		rd.free_rid(dummy_texture_rid)
 		dummy_texture_rid = RID()
@@ -273,6 +284,9 @@ func _create_dummy_texture() -> void:
 
 
 func get_atlas_textures() -> void:
+	if not rd:
+		return
+
 	var uniform_array: Array[RDUniform] = []
 	uniform_array.resize(8)
 
@@ -311,6 +325,9 @@ func _calculate_work_groups() -> void:
 
 
 func _dispatch_compute_shader(delta: float) -> void:
+	if not rd:
+		return
+
 	if not pipeline.is_valid():
 		return
 	
@@ -345,21 +362,10 @@ func _dispatch_compute_shader(delta: float) -> void:
 
 func _cleanup_compute_shader() -> void:	
 	print("CameraBrush: Cleaning up compute shader and resources")
-	# if brush_viewport_uniform_set.is_valid():
-	# 	rd.free_rid(brush_viewport_uniform_set)
-	# 	brush_viewport_uniform_set = RID()
 
 	if brush_shape_texture_rid.is_valid():
 		rd.free_rid(brush_shape_texture_rid)
 		brush_shape_texture_rid = RID()
-
-	# if brush_shape_uniform_set.is_valid():
-	# 	rd.free_rid(brush_shape_uniform_set)
-	# 	brush_shape_uniform_set = RID()
-	
-	# if atlas_texture_uniform_set.is_valid():
-	# 	rd.free_rid(atlas_texture_uniform_set)
-	# 	atlas_texture_uniform_set = RID()
 
 	if dummy_texture_rid.is_valid():
 		rd.free_rid(dummy_texture_rid)

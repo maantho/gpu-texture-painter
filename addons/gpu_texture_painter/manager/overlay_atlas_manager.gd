@@ -122,6 +122,9 @@ func _get_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] =
 
 
 func _create_texture() -> void:
+	if not rd:
+		return
+
 	if atlas_texture_rid.is_valid():
 		if rd.texture_get_format(atlas_texture_rid).width == atlas_size:
 			print("OverlayAtlasManager: Overlay texture already exists with correct size, skipping creation.")

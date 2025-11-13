@@ -36,7 +36,7 @@ void fragment() {
 		float b = uintBitsToFloat(exponential_bit | distance_bits | index_sign_bit | index_exp_bits);
 
 		// display as ALBEDO, Viewport is must be set to unshaded
-		ALBEDO = vec3(atlas_uv, b);
+		ALBEDO = vec3(atlas_uv - vec2(0.5f), b);
     }
 	else{
 		vec4 atlas_color = texture(overlay_texture, atlas_uv);

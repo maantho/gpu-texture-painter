@@ -37,6 +37,7 @@ void main() {
 	}
 
     vec4 brush_texture_color = imageLoad(brush_texture, brush_texture_coords);
+    brush_texture_color.xy = brush_texture_color.xy + vec2(0.5f);
     
     uint b_bits = floatBitsToUint(brush_texture_color.b);
     // get distance in 13-23 -> 11 bits truncated

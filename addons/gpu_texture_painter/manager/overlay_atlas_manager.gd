@@ -4,9 +4,9 @@ class_name OverlayAtlasManager
 extends Node3D
 
 ## Size of the overlay atlas texture (width and height in pixels).
-@export_range(0, 8192) var atlas_size: int = 1024:
+@export_range(1, 1024 * 4) var atlas_size: int = 1024:
 	set(value):
-		atlas_size = value
+		atlas_size = clampi(value, 1, 1024 * 4)
 		RenderingServer.call_on_render_thread(_create_texture)
 		_apply_texture_to_texture_resource(false)
 		

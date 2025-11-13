@@ -4,44 +4,48 @@
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="2_fgal4"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_egkiw"]
 
-[sub_resource type="Texture2DRD" id="Texture2DRD_sasra"]
+[sub_resource type="Texture2DRD" id="Texture2DRD_u3cau"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_coq8p"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fgal4"]
 render_priority = 0
 shader = ExtResource("2_fgal4")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_sasra")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
 shader_parameter/position_in_atlas = Vector2(0, 0)
-shader_parameter/size_in_atlas = Vector2(0.8947368, 1)
+shader_parameter/size_in_atlas = Vector2(1, 1)
 shader_parameter/atlas_index = 0
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_2nij2"]
-lightmap_size_hint = Vector2i(17, 19)
+[sub_resource type="PlaneMesh" id="PlaneMesh_6u4pm"]
+lightmap_size_hint = Vector2i(502, 502)
 add_uv2 = true
+size = Vector2(100, 100)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, -0.69687414, 6.391383, 1.0147493)
+transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, 13.73909, 8.14439, 16.836124)
 script = ExtResource("1_u3cau")
+fov = 28.19
+resolution = Vector2i(8192, 8192)
 color = Color(0.8684467, 0.6165205, 0.99633807, 1)
 drawing = true
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
+[node name="SubViewport" type="SubViewport" parent="CameraBrush"]
+
 [node name="Node" type="Node" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3487231)
-layers = 1048577
-material_overlay = SubResource("ShaderMaterial_coq8p")
-mesh = SubResource("CylinderMesh_2nij2")
-skeleton = NodePath("")
-
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.1034166, -0.5829064, 0.80593115, 0.06258939, 0.8124838, 0.5796143, -0.9926669, -0.009498992, 0.12050807, 3.1239097, 3.143885, 1.2904968)
+transform = Transform3D(0.1034166, -0.5829064, 0.80593127, 0.06258939, 0.8124838, 0.5796143, -0.9926669, -0.009498993, 0.12050807, 3.389407, 3.143885, 1.213354)
 projection = 1
 
 [node name="OverlayAtlasManager" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.9612472)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3540783, 6.570492, 23.464636)
 script = ExtResource("3_egkiw")
-atlas_texture_resource = SubResource("Texture2DRD_sasra")
+atlas_size = 4096
+atlas_texture_resource = SubResource("Texture2DRD_u3cau")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+layers = 1048577
+material_overlay = SubResource("ShaderMaterial_fgal4")
+mesh = SubResource("PlaneMesh_6u4pm")

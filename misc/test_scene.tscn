@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene load_steps=16 format=3 uid="uid://gf5fmdn7810t"]
 
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="1_u3cau"]
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="2_fgal4"]
@@ -11,41 +11,125 @@ render_priority = 0
 shader = ExtResource("2_fgal4")
 shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
 shader_parameter/position_in_atlas = Vector2(0, 0)
-shader_parameter/size_in_atlas = Vector2(1, 1)
+shader_parameter/size_in_atlas = Vector2(0.5, 0.5)
 shader_parameter/atlas_index = 0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_6u4pm"]
-lightmap_size_hint = Vector2i(502, 502)
+lightmap_size_hint = Vector2i(52, 52)
 add_uv2 = true
-size = Vector2(100, 100)
+size = Vector2(10, 10)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_egkiw"]
+render_priority = 0
+shader = ExtResource("2_fgal4")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
+shader_parameter/position_in_atlas = Vector2(0.5, 0)
+shader_parameter/size_in_atlas = Vector2(0.5, 0.5)
+shader_parameter/atlas_index = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_46f6r"]
+lightmap_size_hint = Vector2i(52, 52)
+add_uv2 = true
+size = Vector2(10, 10)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hc0wr"]
+render_priority = 0
+shader = ExtResource("2_fgal4")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
+shader_parameter/position_in_atlas = Vector2(0, 0.5)
+shader_parameter/size_in_atlas = Vector2(0.5, 0.5)
+shader_parameter/atlas_index = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rwn7v"]
+lightmap_size_hint = Vector2i(52, 52)
+add_uv2 = true
+size = Vector2(10, 10)
+
+[sub_resource type="Texture2DRD" id="Texture2DRD_ja42n"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jdhis"]
+render_priority = 0
+shader = ExtResource("2_fgal4")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_ja42n")
+shader_parameter/position_in_atlas = Vector2(0, 0)
+shader_parameter/size_in_atlas = Vector2(1, 0.27272728)
+shader_parameter/atlas_index = 1
+
+[sub_resource type="TorusMesh" id="TorusMesh_12qr2"]
+lightmap_size_hint = Vector2i(33, 9)
+add_uv2 = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g3jr7"]
+render_priority = 0
+shader = ExtResource("2_fgal4")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_ja42n")
+shader_parameter/position_in_atlas = Vector2(0, 0.27272728)
+shader_parameter/size_in_atlas = Vector2(0.42424244, 0.6363636)
+shader_parameter/atlas_index = 1
+
+[sub_resource type="BoxMesh" id="BoxMesh_h5ody"]
+lightmap_size_hint = Vector2i(14, 21)
+add_uv2 = true
 
 [node name="Node3D" type="Node3D"]
 
-[node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(-0.010892798, -0.98582304, -0.1674349, 0.1203901, -0.16751978, 0.9784905, -0.99266696, -0.009499006, 0.120508105, 13.73909, 8.14439, 16.836124)
-script = ExtResource("1_u3cau")
-fov = 28.19
-resolution = Vector2i(8192, 8192)
-color = Color(0.8684467, 0.6165205, 0.99633807, 1)
-drawing = true
-metadata/_custom_type_script = "uid://bq5yvj1llh63a"
+[node name="Node3D2" type="Node3D" parent="."]
+transform = Transform3D(-0.010892795, -0.985823, -0.16743489, 0.81173, -0.10649976, 0.5742405, -0.5839312, -0.12965685, 0.80138224, 0.6770854, 4.574624, 5.309184)
 
-[node name="SubViewport" type="SubViewport" parent="CameraBrush"]
-
-[node name="Node" type="Node" parent="."]
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.1034166, -0.5829064, 0.80593127, 0.06258939, 0.8124838, 0.5796143, -0.9926669, -0.009498993, 0.12050807, 3.389407, 3.143885, 1.213354)
-projection = 1
-
-[node name="OverlayAtlasManager" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3540783, 6.570492, 23.464636)
+[node name="OverlayAtlasManager" type="Node3D" parent="Node3D2"]
+transform = Transform3D(1, 7.450581e-09, -2.9802322e-08, 0, 1, 7.450581e-09, -2.9802322e-08, 2.9802322e-08, 1, 0, 0, 0)
 script = ExtResource("3_egkiw")
-atlas_size = 4096
+atlas_size = 2048
 atlas_texture_resource = SubResource("Texture2DRD_u3cau")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D-Wall" type="MeshInstance3D" parent="Node3D2"]
+transform = Transform3D(-0.010892807, 0.8117301, -0.58393127, -0.985823, -0.10649974, -0.12965684, -0.1674349, 0.57424045, 0.8013822, -0.6057866, 1.8430547, -6.768251)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_fgal4")
 mesh = SubResource("PlaneMesh_6u4pm")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D-Wall2" type="MeshInstance3D" parent="Node3D2"]
+transform = Transform3D(-0.010892807, -0.5839313, -0.81173, -0.985823, -0.12965685, 0.106499754, -0.1674349, 0.8013823, -0.5742405, 6.372521, 1.9588401, -7.9039598)
+layers = 1048577
+material_overlay = SubResource("ShaderMaterial_egkiw")
+mesh = SubResource("PlaneMesh_46f6r")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D-Wall3" type="MeshInstance3D" parent="Node3D2"]
+transform = Transform3D(-0.81173027, -0.010892802, -0.58393127, 0.10649976, -0.9858231, -0.12965684, -0.57424057, -0.16743492, 0.8013822, 3.5073276, 6.239671, -3.0598738)
+layers = 1048577
+material_overlay = SubResource("ShaderMaterial_hc0wr")
+mesh = SubResource("PlaneMesh_rwn7v")
+skeleton = NodePath("../..")
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="OverlayAtlasManager" type="Node3D" parent="Node3D"]
+script = ExtResource("3_egkiw")
+atlas_texture_resource = SubResource("Texture2DRD_ja42n")
+atlas_index = 1
+metadata/_custom_type_script = "uid://nplvtv2bi7u0"
+
+[node name="MeshInstance3D-Torus" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(0.92951924, 0.23966563, 0.28027546, 0.099282086, 0.56932324, -0.81609654, -0.35515767, 0.78640383, 0.50540245, -1.1133957, 3.895925, 1.6251593)
+layers = 1048577
+material_overlay = SubResource("ShaderMaterial_jdhis")
+mesh = SubResource("TorusMesh_12qr2")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D-Cube" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8328917, 3.6124735, -2.3646126)
+layers = 1048577
+material_overlay = SubResource("ShaderMaterial_g3jr7")
+mesh = SubResource("BoxMesh_h5ody")
+skeleton = NodePath("../..")
+
+[node name="CameraBrush" type="Node3D" parent="."]
+transform = Transform3D(-0.303257, -0.6880972, 0.6592096, 0.95192564, -0.2501699, 0.1767827, 0.043270696, 0.68112916, 0.73088306, 0.82613647, 4.4599743, 4.6417637)
+script = ExtResource("1_u3cau")
+fov = 20.0
+resolution = Vector2i(8192, 8192)
+color = Color(0.2521842, 0.6396921, 0.89973, 1)
+metadata/_custom_type_script = "uid://bq5yvj1llh63a"

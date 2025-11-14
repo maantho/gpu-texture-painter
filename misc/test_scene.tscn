@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene load_steps=17 format=3 uid="uid://gf5fmdn7810t"]
 
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="1_u3cau"]
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="2_fgal4"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_egkiw"]
+[ext_resource type="PackedScene" uid="uid://be0n8acdsbi8p" path="res://addons/gpu_texture_painter/brush/camera_brush_viewport.tscn" id="4_fgal4"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_u3cau"]
 
@@ -120,16 +121,27 @@ mesh = SubResource("TorusMesh_12qr2")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D-Cube" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8328917, 3.6124735, -2.3646126)
+transform = Transform3D(0.63123596, -0.040080052, -0.77455443, -0.12548004, 0.9802298, -0.1529849, 0.765373, 0.19376063, 0.61372703, -1.8328917, 3.6124735, -2.322279)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_g3jr7")
 mesh = SubResource("BoxMesh_h5ody")
 skeleton = NodePath("../..")
 
 [node name="CameraBrush" type="Node3D" parent="."]
-transform = Transform3D(-0.303257, -0.6880972, 0.6592096, 0.95192564, -0.2501699, 0.1767827, 0.043270696, 0.68112916, 0.73088306, 0.82613647, 4.4599743, 4.6417637)
+transform = Transform3D(0.95369893, -0.082157046, 0.2893248, 0.09167418, 0.99559873, -0.01947348, -0.2864517, 0.045095026, 0.9570328, 0.9876133, 3.7926197, 8.389962)
 script = ExtResource("1_u3cau")
 fov = 20.0
 resolution = Vector2i(8192, 8192)
 color = Color(0.2521842, 0.6396921, 0.89973, 1)
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
+
+[node name="CameraBrushViewport" type="SubViewport" parent="CameraBrush" instance=ExtResource("4_fgal4")]
+transparent_bg = true
+handle_input_locally = false
+debug_draw = 1
+use_hdr_2d = true
+anisotropic_filtering_level = 0
+canvas_item_default_texture_filter = 0
+positional_shadow_atlas_size = 0
+size = Vector2i(8192, 8192)
+render_target_update_mode = 4

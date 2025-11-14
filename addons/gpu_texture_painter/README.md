@@ -8,7 +8,7 @@ Godot 4.5+ supported.
 
 Feel free to use this addon in any project or use it as inspiration to create your own texture painter running on the GPU :)
 
-For bug reports and feature request please open an issue.
+For bug reports, feature requests and questions please open an issue.
 
 
 ## Features

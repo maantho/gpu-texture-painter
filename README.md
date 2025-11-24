@@ -26,6 +26,9 @@ For bug reports, feature requests and questions please open an issue.
 
 ## Usage
 
+Install via the [Godot Asset Library](https://godotengine.org/asset-library/asset/4486).
+The addon adds two nodes: The **OverlayAtlasManager** for the management of materials and textures and the **CameraBrush** for painting onto the textures.
+
 ### Overlay Atlas Creation
 
 ![OverlayAtlasManager](images/OverlayAtlasManagerEditor.png)

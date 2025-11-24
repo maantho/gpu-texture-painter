@@ -24,6 +24,8 @@ For bug reports, feature requests and questions please open an issue.
 
 ## Usage
 
+The addon adds two nodes: The **OverlayAtlasManager** for the management of materials and textures and the **CameraBrush** for painting onto the textures.
+
 ### Overlay Atlas Creation
 
 - Add **OverlayAtlasManager** Node as sibling of parent to MeshInstance3D nodes.

@@ -119,6 +119,7 @@ func _process(delta: float) -> void:
 	camera.global_rotation = global_rotation
 
 	if drawing and pipeline.is_valid():
+		await RenderingServer.frame_post_draw 
 		RenderingServer.call_on_render_thread(_dispatch_compute_shader.bind(delta))
 
 

@@ -125,11 +125,6 @@ func _create_texture() -> void:
 	if not rd:
 		return
 
-	if atlas_texture_rid.is_valid():
-		if rd.texture_get_format(atlas_texture_rid).width == atlas_size:
-			print("OverlayAtlasManager: Overlay texture already exists with correct size, skipping creation.")
-			return
-
 	print("OverlayAtlasManager: Creating overlay texture of size {0}x{0}".format([atlas_size]))
 
 	# create texure format

@@ -71,7 +71,11 @@ extends Node3D
 @export var color: Color = Color.ORANGE
 
 ## Whether the brush is currently drawing.
-@export var drawing: bool = false
+@export var drawing: bool = false:
+	set(value):
+		drawing = value
+		if viewport:
+			viewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ALWAYS if drawing else SubViewport.UpdateMode.UPDATE_DISABLED
 
 
 var viewport: SubViewport
@@ -163,6 +167,7 @@ func _setup() -> void:
 	camera.size = size
 	camera.far = max_distance
 	viewport.size = resolution
+	viewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ALWAYS if drawing else SubViewport.UpdateMode.UPDATE_DISABLED
 
 	# setup shader
 	RenderingServer.call_on_render_thread(_create_shader_and_pipeline)

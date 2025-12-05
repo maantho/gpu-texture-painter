@@ -1,16 +1,19 @@
 # Godot GPU Texture Painter
 
-![Icon](images/Icon.png)
+<img src="images/Icon.png" width="600" alt="Icon and demonstration in Sponza-scene">
 
 GPU Texture Painter is a plugin for the Godot-Engine, that can be utilized to create game mechanics like spray painting, drawing or splatoon ink.
 
 It supports high precision / realistic painting, multiple meshes, and the ability to choose the brush shape and color freely. Since it runs fully on the GPU it is blazing fast.
 
-Godot 4.5+ supported.
+Godot 4.4+ supported.
+
+<img src="images/preview.gif" width="600" alt="Demo video">
 
 Feel free to use this addon in any project or use it as inspiration to create your own texture painter running on the GPU :)
 
 For bug reports, feature requests and questions please open an issue.
+
 
 
 ## Features

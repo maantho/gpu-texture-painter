@@ -6,8 +6,6 @@ reflected_light_source = 1
 
 [node name="CameraBrushViewport" type="SubViewport"]
 transparent_bg = true
-handle_input_locally = false
-debug_draw = 1
 use_hdr_2d = true
 anisotropic_filtering_level = 0
 canvas_item_default_texture_filter = 0

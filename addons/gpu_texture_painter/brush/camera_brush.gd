@@ -51,8 +51,8 @@ extends Node3D
 @export var max_bleed: int = 0
 
 ## The shape of the brush used for painting.
-## Must be an Image with FORMAT_RGBAF format. Channel R is used as brush opacity.
-@export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
+## Channel R is used as brush opacity.
+@export var brush_shape: Texture2D = preload("uid://b6knnm8h3nhpi"):
 	set(value):
 		brush_shape = value
 		RenderingServer.call_on_render_thread(_create_brush_shape_texture)
@@ -253,9 +253,6 @@ func _create_brush_shape_texture() -> void:
 	if not rd:
 		return
 
-	# if brush_shape_uniform_set.is_valid():
-	# 	rd.free_rid(brush_shape_uniform_set)
-	# 	brush_shape_uniform_set = RID()
 	
 	if brush_shape_texture_rid.is_valid():
 		rd.free_rid(brush_shape_texture_rid)
@@ -263,10 +260,15 @@ func _create_brush_shape_texture() -> void:
 
 	print("CameraBrush: Creating brush shape texture")
 
-	# create texure format
+	# Get image from texture and convert to RGBAF format
+	var image := brush_shape.get_image()
+	if image.get_format() != Image.FORMAT_RGBAF:
+		image.convert(Image.FORMAT_RGBAF)
+
+	# create texture format
 	var fmt := RDTextureFormat.new()
-	fmt.width = brush_shape.get_width()
-	fmt.height = brush_shape.get_height()
+	fmt.width = image.get_width()
+	fmt.height = image.get_height()
 	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
@@ -274,9 +276,8 @@ func _create_brush_shape_texture() -> void:
 	# create texture view
 	var view := RDTextureView.new()
 
-	# create texture
-	#var image := Image.create(overlay_texture_size, overlay_texture_size, false, Image.FORMAT_RGBAF)
-	brush_shape_texture_rid = rd.texture_create(fmt, view, [brush_shape.get_data()]) 
+	# create texture with storage bit for image2D access
+	brush_shape_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 	# create uniform
 	var uniform := RDUniform.new()

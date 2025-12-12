@@ -13,12 +13,20 @@ extends Node3D
 		if camera:
 			camera.projection = projection
 
+		for additional_brush in additional_brushes:
+			if additional_brush.camera:
+				additional_brush.camera.projection = projection
+
 ## Corresponds to the fov value of the underlying camera
 @export var fov: float = 5.0:
 	set(value):
 		fov = clampf(value, 0.1, 179.0)
 		if camera:
 			camera.fov = fov
+
+		for additional_brush in additional_brushes:
+			if additional_brush.camera:
+				additional_brush.camera.fov = fov
 
 ## Corresponds to the size value of the underlying camera
 @export var size: float = 0.5:
@@ -27,6 +35,10 @@ extends Node3D
 		if camera:
 			camera.size = size
 
+		for additional_brush in additional_brushes:
+			if additional_brush.camera:
+				additional_brush.camera.size = size
+
 ## Corresponds to the far value of the underlying camera
 @export var max_distance: float = 1000.0:
 	set(value):
@@ -34,6 +46,10 @@ extends Node3D
 		if camera:
 			max_distance = maxf(value, camera.near + 0.01)
 			camera.far = max_distance
+
+		for additional_brush in additional_brushes:
+			if additional_brush.camera:
+				additional_brush.camera.far = max_distance
 
 # supplied for each invocation
 ## At which distance the brush starts to fade out (1 = at max_distance / no fade)
@@ -66,6 +82,11 @@ extends Node3D
 		if viewport:
 			viewport.size = resolution
 			RenderingServer.call_on_render_thread(_get_brush_viewport_texture)
+		
+		for additional_brush in additional_brushes:
+			if additional_brush.viewport:
+				additional_brush.viewport.size = resolution
+				RenderingServer.call_on_render_thread(additional_brush._get_brush_viewport_texture)
 
 ## The color used for painting.
 @export var color: Color = Color.ORANGE

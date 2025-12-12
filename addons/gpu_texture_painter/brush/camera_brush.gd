@@ -73,6 +73,14 @@ extends Node3D
 ## Whether to use process() or physics_process() for updating the brush position and dispatching the compute shader.
 @export var use_physics_process: bool = false
 
+@export var additional_dispatches: int = 0:
+	set(value):
+		additional_dispatches = maxi(value, 0)
+		_create_additional_brushes(additional_dispatches)
+
+
+var additional_brushes: Array[AdditionalCameraBrush] = []
+
 ## Whether the brush is currently drawing.
 @export var drawing: bool = false:
 	set(value):
@@ -106,6 +114,9 @@ var y_groups: int
 
 const  GROUP_NAME := "camera_brushes"
 
+var prev_position: Vector3
+var prev_orientation: Quaternion
+
 func _ready() -> void:
 	add_to_group(GROUP_NAME)
 
@@ -118,21 +129,17 @@ func _process(delta: float) -> void:
 	if use_physics_process:
 		return
 
-	if not camera:
-		return
-	
-	camera.global_position = global_position
-	camera.global_rotation = global_rotation
-
-	if drawing and pipeline.is_valid():
-		await RenderingServer.frame_post_draw 
-		RenderingServer.call_on_render_thread(_dispatch_compute_shader.bind(delta))
+	_update(delta)
 
 
 func _physics_process(delta: float) -> void:
 	if not use_physics_process:
 		return
 
+	_update(delta)
+
+
+func _update(delta: float) -> void:
 	if not camera:
 		return
 	
@@ -140,9 +147,35 @@ func _physics_process(delta: float) -> void:
 	camera.global_rotation = global_rotation
 
 	if drawing and pipeline.is_valid():
+
 		await RenderingServer.frame_post_draw 
 		RenderingServer.call_on_render_thread(_dispatch_compute_shader.bind(delta))
 
+		for i in range(additional_dispatches):
+			var additional_brush : AdditionalCameraBrush = additional_brushes[i]
+			if not additional_brush.camera:
+				continue
+
+			additional_brush.camera.global_position = lerp(prev_position, global_position, float(i + 1) / float(1 + additional_dispatches))
+
+			var current_rotation = Quaternion.from_euler(global_rotation)
+			additional_brush.camera.global_rotation = prev_orientation.slerp(current_rotation, float(i + 1) / float(1 + additional_dispatches)).get_euler()
+			
+			RenderingServer.call_on_render_thread(additional_brush.dispatch_compute_shader.bind(delta))
+
+	prev_position = global_position
+	prev_orientation = Quaternion.from_euler(global_rotation)
+
+func _create_additional_brushes(count: int) -> void:
+	for brush_to_remove in additional_brushes:
+		if brush_to_remove:
+			brush_to_remove.queue_free()
+	
+	additional_brushes.clear()
+
+	for i in range(count):
+		additional_brushes.append(AdditionalCameraBrush.new(self))
+		add_child(additional_brushes[i])
 
 func _validate_property(property: Dictionary) -> void:
 	if projection == Camera3D.ProjectionType.PROJECTION_ORTHOGONAL:
@@ -201,6 +234,9 @@ func _setup() -> void:
 	RenderingServer.call_on_render_thread(_create_dummy_texture)
 	(func(): RenderingServer.call_on_render_thread(get_atlas_textures)).call_deferred()  # call after SceneTree is fully initialized
 	_calculate_work_groups()
+
+
+	_create_additional_brushes(additional_dispatches)
 
 
 func _create_shader_and_pipeline() -> void:

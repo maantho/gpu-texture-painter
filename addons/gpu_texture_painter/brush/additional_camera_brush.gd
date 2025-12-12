@@ -1,6 +1,6 @@
 @tool
 class_name AdditionalCameraBrush
-extends Node3D
+extends Node
 
 var parent_camera_brush: CameraBrush = null
 
@@ -16,10 +16,11 @@ var pipeline: RID
 
 var brush_viewport_uniform_set: RID
 
+func _init(parent: CameraBrush) -> void:
+	parent_camera_brush = parent
 
 func _ready() -> void:
 	rd = RenderingServer.get_rendering_device()
-	parent_camera_brush = get_parent() as CameraBrush
 
 	_setup()
 
@@ -106,7 +107,7 @@ func _get_brush_viewport_texture() -> void:
 	brush_viewport_uniform_set = rd.uniform_set_create([uniform], shader, 0)
 
 
-func _dispatch_compute_shader(delta: float) -> void:
+func dispatch_compute_shader(delta: float) -> void:
 	if not rd:
 		return
 

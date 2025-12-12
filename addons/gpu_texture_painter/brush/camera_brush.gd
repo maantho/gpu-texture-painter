@@ -426,7 +426,7 @@ func _dispatch_compute_shader(delta: float) -> void:
 	push_constant.push_back(linear_color.g)
 	push_constant.push_back(linear_color.b)
 	push_constant.push_back(linear_color.a)
-	push_constant.push_back(delta * 100)  # need 0.01 seconds to draw full opacity
+	push_constant.push_back(delta * 100 / (additional_dispatches + 1))  # need 0.01 seconds to draw full opacity
 	push_constant.push_back(max_distance)
 	push_constant.push_back(start_distance_fade)
 	push_constant.push_back(float(min_bleed))

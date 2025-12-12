@@ -9,11 +9,7 @@ var camera: Camera3D
 var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 
 # Compute shader properties
-# static
 var rd: RenderingDevice
-var shader: RID
-var pipeline: RID
-
 var brush_viewport_uniform_set: RID
 
 func _init(parent: CameraBrush) -> void:
@@ -21,7 +17,6 @@ func _init(parent: CameraBrush) -> void:
 
 func _ready() -> void:
 	rd = RenderingServer.get_rendering_device()
-
 	_setup()
 
 
@@ -60,27 +55,7 @@ func _setup() -> void:
 	viewport.size = parent_camera_brush.resolution
 	viewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ALWAYS if parent_camera_brush.drawing else SubViewport.UpdateMode.UPDATE_DISABLED
 
-	# setup shader
-	RenderingServer.call_on_render_thread(_create_shader_and_pipeline)
 	RenderingServer.call_on_render_thread(_get_brush_viewport_texture)
-
-
-func _create_shader_and_pipeline() -> void:
-	if not rd:
-		return
-
-	if shader.is_valid():
-		rd.free_rid(shader)
-		shader = RID()
-	
-	print("CameraBrush: Creating compute shader and pipeline")
-
-	# create shader
-	var shader_file := load("uid://bwm7j25sbgip3")
-	var shader_spirv: RDShaderSPIRV = shader_file.get_spirv()
-	shader = rd.shader_create_from_spirv(shader_spirv)
-	pipeline = rd.compute_pipeline_create(shader)
-
 
 func _get_brush_viewport_texture() -> void:
 	if not viewport:
@@ -89,7 +64,10 @@ func _get_brush_viewport_texture() -> void:
 	if not rd:
 		return
 
-	print("CameraBrush: Getting brush viewport texture")
+	if not parent_camera_brush.shader.is_valid():
+		return
+
+	print("AdditionalCameraBrush: Getting brush viewport texture")
 
 	# get camera brush texture RID
 	var viewport_texture := viewport.get_texture()
@@ -103,15 +81,15 @@ func _get_brush_viewport_texture() -> void:
 	uniform.binding = 0
 	uniform.add_id(brush_viewport_texture_rid)
 
-	# create uniform set
-	brush_viewport_uniform_set = rd.uniform_set_create([uniform], shader, 0)
+	# create uniform set 
+	brush_viewport_uniform_set = rd.uniform_set_create([uniform], parent_camera_brush.shader, 0)
 
 
 func dispatch_compute_shader(delta: float) -> void:
 	if not rd:
 		return
 
-	if not pipeline.is_valid():
+	if not parent_camera_brush.pipeline.is_valid():
 		return
 	
 	if not (brush_viewport_uniform_set.is_valid() and parent_camera_brush.brush_shape_uniform_set.is_valid() and parent_camera_brush.atlas_texture_uniform_set.is_valid()):
@@ -134,7 +112,7 @@ func dispatch_compute_shader(delta: float) -> void:
 	push_constant.push_back(0.0)
 
 	var compute_list := rd.compute_list_begin()
-	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
+	rd.compute_list_bind_compute_pipeline(compute_list, parent_camera_brush.pipeline)
 	rd.compute_list_bind_uniform_set(compute_list, brush_viewport_uniform_set, 0)
 	rd.compute_list_bind_uniform_set(compute_list, parent_camera_brush.brush_shape_uniform_set, 1)
 	rd.compute_list_bind_uniform_set(compute_list, parent_camera_brush.atlas_texture_uniform_set, 2)
@@ -144,8 +122,5 @@ func dispatch_compute_shader(delta: float) -> void:
 
 
 func _cleanup_compute_shader() -> void:	
-	print("CameraBrush: Cleaning up compute shader and resources")
-
-	if shader.is_valid():
-		rd.free_rid(shader)
-		shader = RID()
+	pass
+	#print("CameraBrush: Cleaning up compute shader and resources")

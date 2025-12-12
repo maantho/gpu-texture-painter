@@ -11,5 +11,6 @@ config_version=5
 [application]
 
 config/name="GPU Texture Painter"
+run/main_scene="uid://gf5fmdn7810t"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://images/Icon.png"

@@ -36,9 +36,9 @@ The addon adds two nodes: The **OverlayAtlasManager** for the management of mate
 
 ![OverlayAtlasManager](images/OverlayAtlasManagerEditor.png)
 
-- Add **OverlayAtlasManager** Node as sibling of parent to MeshInstance3D nodes.
+- Add **OverlayAtlasManager** Node as sibling or parent to MeshInstance3D nodes.
     - Use hierarchy for compartmentalization of atlases.
-    - All meshes need to have the UV2 unwrapped.
+    - All meshes need to have the UV2 unwrapped as described [here](https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/using_lightmap_gi.html#setting-up).
 - Set the wanted texture size.
 - Set the shader file used for the overlay material. See [Appearance of the Overlay](#overlay-atlas-creation).
 - Press **"Generate atlas and apply shader"** to generate the atlas packing and apply the overlay shader material to all materials.
@@ -59,6 +59,7 @@ The addon adds two nodes: The **OverlayAtlasManager** for the management of mate
 - **Brush Shape**: Image of the brush shape. The R Channel dictates, how much paint is applied.
 - **Resolution**: Resolution of the CameraBrush render target. Increase or decrease until holes in the painting disappear. (Affects performance)
 - **Color**: Color of the brush. Opacity can be set.
+- **Draw Speed**: The rate at which the paint is applied.
 - **Drawing**: If enabled the brush renders and paint is applied. Can also be set from script. 
 
 ### Appearance of the overlay

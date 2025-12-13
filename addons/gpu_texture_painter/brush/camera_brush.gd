@@ -70,9 +70,6 @@ extends Node3D
 ## The color used for painting.
 @export var color: Color = Color.ORANGE
 
-## Whether to use process() or physics_process() for updating the brush position and dispatching the compute shader.
-@export var use_physics_process: bool = false
-
 ## Whether the brush is currently drawing.
 @export var drawing: bool = false:
 	set(value):
@@ -115,24 +112,6 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if use_physics_process:
-		return
-
-	if not camera:
-		return
-	
-	camera.global_position = global_position
-	camera.global_rotation = global_rotation
-
-	if drawing and pipeline.is_valid():
-		await RenderingServer.frame_post_draw 
-		RenderingServer.call_on_render_thread(_dispatch_compute_shader.bind(delta))
-
-
-func _physics_process(delta: float) -> void:
-	if not use_physics_process:
-		return
-
 	if not camera:
 		return
 	

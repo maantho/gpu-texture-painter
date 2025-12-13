@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="1_u3cau"]
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="2_fgal4"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_egkiw"]
-[ext_resource type="Script" uid="uid://cvs7dnfxasrmj" path="res://misc/camera_3d.gd" id="3_fgal4"]
+[ext_resource type="Script" path="res://misc/camera_3d.gd" id="3_fgal4"]
 
-[sub_resource type="Texture2DRD" id="Texture2DRD_u3cau"]
+[sub_resource type="Texture2DRD" id="Texture2DRD_fgal4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fgal4"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_egkiw"]
 render_priority = 0
 shader = ExtResource("2_fgal4")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_fgal4")
 shader_parameter/position_in_atlas = Vector2(0, 0)
 shader_parameter/size_in_atlas = Vector2(0.5, 0.5)
 shader_parameter/atlas_index = 0
@@ -20,10 +20,10 @@ lightmap_size_hint = Vector2i(52, 52)
 add_uv2 = true
 size = Vector2(10, 10)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_egkiw"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_46f6r"]
 render_priority = 0
 shader = ExtResource("2_fgal4")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_fgal4")
 shader_parameter/position_in_atlas = Vector2(0.5, 0)
 shader_parameter/size_in_atlas = Vector2(0.5, 0.5)
 shader_parameter/atlas_index = 0
@@ -33,10 +33,10 @@ lightmap_size_hint = Vector2i(52, 52)
 add_uv2 = true
 size = Vector2(10, 10)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_46f6r"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hc0wr"]
 render_priority = 0
 shader = ExtResource("2_fgal4")
-shader_parameter/overlay_texture = SubResource("Texture2DRD_u3cau")
+shader_parameter/overlay_texture = SubResource("Texture2DRD_fgal4")
 shader_parameter/position_in_atlas = Vector2(0, 0.5)
 shader_parameter/size_in_atlas = Vector2(0.5, 0.5)
 shader_parameter/atlas_index = 0
@@ -92,27 +92,27 @@ transform = Transform3D(-0.010892795, -0.985823, -0.16743489, 0.81173, -0.106499
 transform = Transform3D(0.7269731, 0.4934929, 0.47746724, -0.63188815, 0.20863482, 0.74645096, 0.2687519, -0.84435564, 0.46350408, 0, 0, 0)
 script = ExtResource("3_egkiw")
 atlas_size = 2048
-atlas_texture_resource = SubResource("Texture2DRD_u3cau")
+atlas_texture_resource = SubResource("Texture2DRD_fgal4")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
 [node name="MeshInstance3D-Wall" type="MeshInstance3D" parent="Node3D2"]
 transform = Transform3D(-0.010892807, 0.8117301, -0.58393127, -0.985823, -0.10649974, -0.12965684, -0.1674349, 0.57424045, 0.8013822, -0.6057866, 1.8430547, -6.768251)
 layers = 1048577
-material_overlay = SubResource("ShaderMaterial_fgal4")
+material_overlay = SubResource("ShaderMaterial_egkiw")
 mesh = SubResource("PlaneMesh_6u4pm")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D-Wall2" type="MeshInstance3D" parent="Node3D2"]
 transform = Transform3D(-0.010892807, -0.5839313, -0.81173, -0.985823, -0.12965685, 0.106499754, -0.1674349, 0.8013823, -0.5742405, 6.372521, 1.9588401, -7.9039598)
 layers = 1048577
-material_overlay = SubResource("ShaderMaterial_egkiw")
+material_overlay = SubResource("ShaderMaterial_46f6r")
 mesh = SubResource("PlaneMesh_46f6r")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D-Wall3" type="MeshInstance3D" parent="Node3D2"]
 transform = Transform3D(-0.81173027, -0.010892802, -0.58393127, 0.10649976, -0.9858231, -0.12965684, -0.57424057, -0.16743492, 0.8013822, 3.5073276, 6.239671, -3.0598738)
 layers = 1048577
-material_overlay = SubResource("ShaderMaterial_46f6r")
+material_overlay = SubResource("ShaderMaterial_hc0wr")
 mesh = SubResource("PlaneMesh_rwn7v")
 skeleton = NodePath("../..")
 
@@ -139,7 +139,7 @@ mesh = SubResource("BoxMesh_h5ody")
 skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3145494, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9084415, 4.7374234, 3.5546737)
 script = ExtResource("3_fgal4")
 
 [node name="CameraBrush" type="Node3D" parent="Camera3D"]

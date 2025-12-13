@@ -70,6 +70,14 @@ extends Node3D
 ## The color used for painting.
 @export var color: Color = Color.ORANGE
 
+## The rate at which the brush paints.
+## Higher values make the brush paint faster.
+## 10 means it takes 0.1 seconds to paint full opacity.
+## 100 means it takes 0.01 seconds to paint full opacity.
+@export var draw_speed: float = 100:
+	set(value):
+		draw_speed = maxf(value, 0.01)
+
 ## Whether the brush is currently drawing.
 @export var drawing: bool = false:
 	set(value):
@@ -348,7 +356,7 @@ func _dispatch_compute_shader(delta: float) -> void:
 	push_constant.push_back(linear_color.g)
 	push_constant.push_back(linear_color.b)
 	push_constant.push_back(linear_color.a)
-	push_constant.push_back(delta * 100)  # need 0.01 seconds to draw full opacity
+	push_constant.push_back(delta * draw_speed)
 	push_constant.push_back(max_distance)
 	push_constant.push_back(start_distance_fade)
 	push_constant.push_back(float(min_bleed))

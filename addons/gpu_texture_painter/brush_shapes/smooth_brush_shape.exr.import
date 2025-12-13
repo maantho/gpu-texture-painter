@@ -1,8 +1,8 @@
 [remap]
 
-uid="uid://b6knnm8h3nhpi"
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://b6knnm8h3nhpi"
 path="res://.godot/imported/smooth_brush_shape.exr-d566577165903a169a929ab146c87836.ctex"
 metadata={
 "vram_texture": false

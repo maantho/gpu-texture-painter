@@ -21,7 +21,9 @@ void fragment() {
 		uint index_sign_bit = (atlas_index & 0x4u) << uint(31 - 2);
 		uint index_exp_bits = (atlas_index & 0x3u) << 24u;
 		float b = uintBitsToFloat(exponential_bit | distance_bits | index_sign_bit | index_exp_bits);
-		ALBEDO = vec3(atlas_uv - vec2(0.5f), b);
+		ALBEDO = vec3(0.0);
+		SPECULAR = 0.0;
+		EMISSION = vec3(atlas_uv - vec2(0.5), b);
     }
 	else{
 		// This code is executed for normal cameras.

@@ -35,8 +35,10 @@ void fragment() {
 		// combine bits into B Channel
 		float b = uintBitsToFloat(exponential_bit | distance_bits | index_sign_bit | index_exp_bits);
 
-		// display as EMISSION to remove shading
-		EMISSION = vec3(atlas_uv - vec2(0.5f), b);
+		// display as EMISSION to avoid shading
+		ALBEDO = vec3(0.0);
+		SPECULAR = 0.0;
+		EMISSION = vec3(atlas_uv - vec2(0.5), b);
     }
 	else{
 		vec4 atlas_color = texture(overlay_texture, atlas_uv);

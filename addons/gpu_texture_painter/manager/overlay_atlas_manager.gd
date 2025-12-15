@@ -21,6 +21,8 @@ var atlas_texture_rid: RID = RID()
 ## Calculates the atlas and applies the overlay materials to all MeshInstance3D children & siblings.
 @export_tool_button("Generate atlas and apply shader") var apply_action = apply
 
+@export var apply_on_ready: bool = false
+
 var rd: RenderingDevice
 
 const  GROUP_NAME := "overlay_atlas_managers"
@@ -30,8 +32,15 @@ func _ready() -> void:
 	_get_atlas_index()
 
 	rd = RenderingServer.get_rendering_device()
+	
 	RenderingServer.call_on_render_thread(_create_texture)
-	_apply_texture_to_texture_resource(false)
+
+	if apply_on_ready:
+		_apply_texture_to_texture_resource(true)
+		_construct_atlas_and_apply_materials()
+	else:
+		_apply_texture_to_texture_resource(false)
+
 
 
 func _notification(what):

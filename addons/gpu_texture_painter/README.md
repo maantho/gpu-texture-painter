@@ -40,6 +40,7 @@ The addon adds two nodes: The **OverlayAtlasManager** for the management of mate
 - Set the shader file used for the overlay material. See [Appearance of the Overlay](#overlay-atlas-creation).
 - Press **"Generate atlas and apply shader"** to generate the atlas packing and apply the overlay shader material to all materials.
 - Alternatively, call the **apply()** method in a script.
+- Alternatively, select **Apply on ready**. Useful for MeshInstance3Ds inside PackedScenes.
 
 ### Camera Brush
 

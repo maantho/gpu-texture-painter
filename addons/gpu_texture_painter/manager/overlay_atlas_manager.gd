@@ -3,29 +3,32 @@
 class_name OverlayAtlasManager
 extends Node3D
 
+
+const  GROUP_NAME := "overlay_atlas_managers"
+
 ## Size of the overlay atlas texture (width and height in pixels).
 @export_range(1, 1024 * 4) var atlas_size: int = 1024:
 	set(value):
 		atlas_size = clampi(value, 1, 1024 * 4)
 		RenderingServer.call_on_render_thread(_create_texture)
-		_apply_texture_to_texture_resource(false)
+		_apply_texture_to_texture_resource()
 		
-var atlas_texture_rid: RID = RID()
 @export_storage var atlas_texture_resource: Texture2DRD = null
 
-@export_storage var atlas_index: int = 0
 
 ## Shader used for overlay materials.
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
 
 ## Calculates the atlas and applies the overlay materials to all MeshInstance3D children & siblings.
-@export_tool_button("Generate atlas and apply shader") var apply_action = apply
+@export_tool_button("Apply") var apply_action = apply
 
 @export var apply_on_ready: bool = false
 
-var rd: RenderingDevice
+var atlas_index: int = 0
 
-const  GROUP_NAME := "overlay_atlas_managers"
+var rd: RenderingDevice
+var atlas_texture_rid: RID = RID()
+
 
 func _ready() -> void:
 	add_to_group(GROUP_NAME)
@@ -33,14 +36,13 @@ func _ready() -> void:
 
 	rd = RenderingServer.get_rendering_device()
 	
-	RenderingServer.call_on_render_thread(_create_texture)
-
 	if apply_on_ready:
-		_apply_texture_to_texture_resource(true)
-		_construct_atlas_and_apply_materials()
+		# create everything from scratch
+		apply()
 	else:
-		_apply_texture_to_texture_resource(false)
-
+		# create texture and apply to existing resource
+		RenderingServer.call_on_render_thread(_create_texture)
+		_apply_texture_to_texture_resource()
 
 
 func _notification(what):
@@ -50,7 +52,8 @@ func _notification(what):
 
 func apply() -> void:
 	RenderingServer.call_on_render_thread(_create_texture)
-	_apply_texture_to_texture_resource(true)
+	_create_texture_resource()
+	_apply_texture_to_texture_resource()
 	_construct_atlas_and_apply_materials()
 
 
@@ -73,6 +76,44 @@ func _get_atlas_index() -> void:
 		
 		atlas_index = possible_index[0]
 		print("OverlayAtlasManager: Assigned atlas index {0}".format([atlas_index]))
+
+
+func _create_texture() -> void:
+	if not rd:
+		return
+
+	print("OverlayAtlasManager: Creating overlay texture of size {0}x{0}".format([atlas_size]))
+
+	# create texure format
+	var fmt := RDTextureFormat.new()
+	fmt.width = atlas_size
+	fmt.height = atlas_size
+	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
+
+	# create texture view
+	var view := RDTextureView.new()
+
+	# create texture
+	var image := Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
+	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
+
+	# notify brushes
+	get_tree().call_group(CameraBrush.GROUP_NAME, "get_atlas_textures")
+
+
+func _create_texture_resource() -> void:
+		atlas_texture_resource = Texture2DRD.new()
+
+
+func _apply_texture_to_texture_resource() -> void:
+	#create Texture2DRD
+	if not atlas_texture_resource:
+		_create_texture_resource()
+	
+	atlas_texture_resource.texture_rd_rid = atlas_texture_rid  # handles cleanup of old RID
+	notify_property_list_changed()
 
 
 func _construct_atlas_and_apply_materials() -> void:
@@ -128,40 +169,6 @@ func _get_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] =
 		children_acc = _get_self_and_child_mesh_instances(child, children_acc)
 
 	return children_acc
-
-
-func _create_texture() -> void:
-	if not rd:
-		return
-
-	print("OverlayAtlasManager: Creating overlay texture of size {0}x{0}".format([atlas_size]))
-
-	# create texure format
-	var fmt := RDTextureFormat.new()
-	fmt.width = atlas_size
-	fmt.height = atlas_size
-	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
-	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
-
-	# create texture view
-	var view := RDTextureView.new()
-
-	# create texture
-	var image := Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
-	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
-
-	# notify brushes
-	get_tree().call_group(CameraBrush.GROUP_NAME, "get_atlas_textures")
-
-
-func _apply_texture_to_texture_resource(force_recreation: bool) -> void:
-	#create Texture2DRD
-	if not atlas_texture_resource or force_recreation:
-		atlas_texture_resource = Texture2DRD.new()
-	
-	atlas_texture_resource.texture_rd_rid = atlas_texture_rid  # handles cleanup of old RID
-	notify_property_list_changed()
 
 
 func _cleanup_texture() -> void:

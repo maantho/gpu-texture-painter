@@ -121,7 +121,6 @@ skeleton = NodePath("../..")
 [node name="OverlayAtlasManager" type="Node3D" parent="Node3D"]
 script = ExtResource("3_egkiw")
 atlas_texture_resource = SubResource("Texture2DRD_hc0wr")
-atlas_index = 1
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
 [node name="MeshInstance3D-Torus" type="MeshInstance3D" parent="Node3D"]

@@ -6,6 +6,7 @@
 .import/
 export.cfg
 export_presets.cfg
+*.unwrap_cache
 
 # Imported translations (automatically generated from CSV files)
 *.translation

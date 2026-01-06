@@ -63,7 +63,8 @@ extends Node3D
 @export var brush_shape: Texture2D = preload("uid://b6knnm8h3nhpi"):
 	set(value):
 		brush_shape = value
-		RenderingServer.call_on_render_thread(brush_compositor_effect._create_brush_shape_texture)
+		if brush_compositor_effect:
+			RenderingServer.call_on_render_thread(brush_compositor_effect._create_brush_shape_texture)
 
 ## The resolution of the brush viewport texture.
 ## Higher resolutions reduce holes in the overlay.
@@ -95,8 +96,8 @@ var last_delta: float = 0.0
 
 var viewport: SubViewport
 var camera: Camera3D
-var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 var brush_compositor_effect: BrushCompositorEffect
+var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 
 const  GROUP_NAME := "camera_brushes"
 
@@ -131,15 +132,15 @@ func _ready() -> void:
 	viewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ALWAYS if drawing else SubViewport.UpdateMode.UPDATE_DISABLED
 
 	# get brush compositor effect
-	for effect in camera.compositor.compositor_effects:
-		if effect is BrushCompositorEffect:
-			brush_compositor_effect = effect
-			break
+	brush_compositor_effect = camera.compositor.compositor_effects[0] as BrushCompositorEffect
+	if not brush_compositor_effect:
+		push_error("CameraBrush: Failed to get brush compositor effect from camera brush viewport scene")
+		return
 	
 	brush_compositor_effect.camera_brush = self
 
 	get_atlas_textures()
-	RenderingServer.call_on_render_thread(brush_compositor_effect._create_brush_shape_texture)
+	RenderingServer.call_on_render_thread(brush_compositor_effect.create_brush_shape_texture)
 
 
 func _process(delta: float) -> void:

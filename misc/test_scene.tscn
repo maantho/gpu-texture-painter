@@ -138,15 +138,14 @@ mesh = SubResource("BoxMesh_h5ody")
 skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9084415, 4.7374234, 3.5546737)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6224786, 5.811692, 3.5546737)
 script = ExtResource("3_fgal4")
 
 [node name="CameraBrush" type="Node3D" parent="Camera3D"]
-transform = Transform3D(1, -1.899898e-07, -2.2351742e-07, -3.3527613e-08, 0.9999997, -4.917383e-07, -1.4901161e-08, 1.4901161e-08, 0.99999964, 0, 0, 0)
 script = ExtResource("1_u3cau")
 fov = 20.0
-resolution = Vector2i(8192, 8192)
-color = Color(1, 0.64685506, 0, 0.12100001)
+resolution = Vector2i(512, 512)
+color = Color(1, 0.64685506, 0, 1)
 drawing = true
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 

@@ -43,12 +43,20 @@ extends Node3D
 ## How many pixels the brush bleeds at every point in the overlay atlas textures, if the mesh is closest to the brush.
 ## If min_bleed and max_bleed are the same, bleed is constant.
 ## Bleed may be necessary at low viewport resolutions to avoid holes.
-@export var min_bleed: int = 0
+@export var min_bleed: int = 0:
+	set(value):
+		min_bleed = value
+		if min_bleed > max_bleed:
+			max_bleed = min_bleed
 
 #supplied for each invocation
 ## How many pixels the brush bleeds at every point in the overlay atlas textures, if the mesh is at max distance from the brush.
 ## Bleed may be necessary at low viewport resolutions to avoid holes.
-@export var max_bleed: int = 0
+@export var max_bleed: int = 0:
+	set(value):
+		max_bleed = value
+		if max_bleed < min_bleed:
+			min_bleed = max_bleed
 
 ## The shape of the brush used for painting.
 ## Channel R is used as brush opacity.

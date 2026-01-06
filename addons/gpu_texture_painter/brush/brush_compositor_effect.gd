@@ -10,7 +10,7 @@ var pipeline: RID
 
 var dummy_texture_rid: RID
 
-#dynamic
+# can change
 var brush_shape_texture_rid: RID
 var brush_shape_uniform_set: RID
 
@@ -57,7 +57,10 @@ func _initialize_compute() -> void:
 		pipeline = rd.compute_pipeline_create(shader)
 
 
-func _create_brush_shape_texture() -> void:
+func create_brush_shape_texture() -> void:
+	if not camera_brush:
+		return
+
 	if not camera_brush.brush_shape:
 		return
 	

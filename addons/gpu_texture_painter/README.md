@@ -31,6 +31,8 @@ For bug reports, feature requests and questions please open an issue.
 Install via the [Godot Asset Library](https://godotengine.org/asset-library/asset/4486).
 The addon adds two nodes: The **OverlayAtlasManager** for the management of materials and textures and the **CameraBrush** for painting onto the textures.
 
+For an example configuration open the [demo scene](demo/demo_scene.tscn)
+
 ### Overlay Atlas Creation
 
 - Add **OverlayAtlasManager** Node as sibling or parent to MeshInstance3D nodes.

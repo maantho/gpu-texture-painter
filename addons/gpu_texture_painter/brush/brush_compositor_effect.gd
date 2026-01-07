@@ -154,7 +154,6 @@ func get_atlas_textures(all_managers: Array[Node]) -> void:
 	atlas_texture_uniform_set = rd.uniform_set_create(uniform_array, shader, 2)
 
 
-# Called by the rendering thread every frame.
 func _render_callback(p_effect_callback_type: EffectCallbackType, p_render_data: RenderData) -> void:
 	if not rd:
 		return
@@ -172,10 +171,8 @@ func _render_callback(p_effect_callback_type: EffectCallbackType, p_render_data:
 		return
 
 	# Get our render scene buffers object, this gives us access to our render buffers.
-	# Note that implementation differs per renderer hence the need for the cast.
 	var render_scene_buffers := p_render_data.get_render_scene_buffers()
 	if render_scene_buffers:
-		# Get our render size, this is the 3D render resolution!
 		var size: Vector2i = render_scene_buffers.get_internal_size()
 		if size.x == 0 and size.y == 0:
 			return
@@ -205,19 +202,19 @@ func _render_callback(p_effect_callback_type: EffectCallbackType, p_render_data:
 
 
 		# Get the RID for our color image, we will be reading from and writing to it.
-		var input_image: RID = render_scene_buffers.get_color_layer(0)
+		var framebuffer_rid: RID = render_scene_buffers.get_color_layer(0)
 
 		# Create a uniform set, this will be cached, the cache will be cleared if our viewports configuration is changed.
-		var uniform := RDUniform.new()
-		uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-		uniform.binding = 0
-		uniform.add_id(input_image)
-		var uniform_set := UniformSetCacheRD.get_cache(shader, 0, [uniform])
+		var framebuffer_uniform := RDUniform.new()
+		framebuffer_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+		framebuffer_uniform.binding = 0
+		framebuffer_uniform.add_id(framebuffer_rid)
+		var framebuffer_uniform_set := UniformSetCacheRD.get_cache(shader, 0, [framebuffer_uniform])
 
 		# Run our compute shader.
 		var compute_list := rd.compute_list_begin()
 		rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
-		rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+		rd.compute_list_bind_uniform_set(compute_list, framebuffer_uniform_set, 0)
 		rd.compute_list_bind_uniform_set(compute_list, brush_shape_uniform_set, 1)
 		rd.compute_list_bind_uniform_set(compute_list, atlas_texture_uniform_set, 2)
 		rd.compute_list_set_push_constant(compute_list, push_constant.to_byte_array(), push_constant.size() * 4)

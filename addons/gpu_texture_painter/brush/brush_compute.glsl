@@ -4,7 +4,7 @@
 // Invocations in the (x, y, z) dimension
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
-layout(rgba16f, set = 0, binding = 0) uniform restrict readonly image2D brush_texture;
+layout(rgba16f, set = 0, binding = 0) uniform restrict readonly image2D framebuffer;
 
 layout(rgba32f, set = 1, binding = 0) uniform restrict readonly image2D brush_shape;
 
@@ -30,16 +30,16 @@ layout(rgba32f, set = 2, binding = 7) uniform restrict image2D overlay_texture_7
 // The code we want to execute in each invocation
 void main() {
     // gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups
-    ivec2 brush_texture_coords = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 framebuffer_coords = ivec2(gl_GlobalInvocationID.xy);
 
-    if ((brush_texture_coords.x > imageSize(brush_texture).x) || (brush_texture_coords.y > imageSize(brush_texture).y)) {
+    if ((framebuffer_coords.x > imageSize(framebuffer).x) || (framebuffer_coords.y > imageSize(framebuffer).y)) {
 		return;
 	}
 
-    vec4 brush_texture_color = imageLoad(brush_texture, brush_texture_coords);
-    brush_texture_color.xy = brush_texture_color.xy + vec2(0.5f);
+    vec4 framebuffer_color = imageLoad(framebuffer, framebuffer_coords);
+    framebuffer_color.xy = framebuffer_color.xy + vec2(0.5f);
     
-    uint b_bits = floatBitsToUint(brush_texture_color.b);
+    uint b_bits = floatBitsToUint(framebuffer_color.b);
     // get distance in 13-23 -> 11 bits truncated
     float distance = unpackHalf2x16(b_bits >> uint(13 - 5) & 0xFFE0u).x;
     float distance_value = clamp(abs(distance) / params.max_distance, 0.0f, 1.0f);
@@ -58,11 +58,11 @@ void main() {
         bleed = int(mix(params.min_bleed, params.max_bleed, distance_value));
     }
 
-    ivec2 brush_shape_coords = ivec2(vec2(brush_texture_coords) / vec2(imageSize(brush_texture)) * vec2(imageSize(brush_shape)));
+    ivec2 brush_shape_coords = ivec2(vec2(framebuffer_coords) / vec2(imageSize(framebuffer)) * vec2(imageSize(brush_shape)));
     vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_shape, brush_shape_coords).r * params.delta * params.brush_color.a * distance_fade);
 
 #define PROCESS_TEXTURE(tex) { \
-    ivec2 overlay_texture_coords = ivec2(brush_texture_color.xy * vec2(imageSize(tex))); \
+    ivec2 overlay_texture_coords = ivec2(framebuffer_color.xy * vec2(imageSize(tex))); \
     for (int y = -bleed; y <= bleed; y++) { \
         for (int x = -bleed; x <= bleed; x++) { \
             ivec2 bleed_coords = overlay_texture_coords + ivec2(x, y); \

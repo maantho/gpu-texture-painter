@@ -64,7 +64,7 @@ extends Node3D
 	set(value):
 		brush_shape = value
 		if brush_compositor_effect:
-			RenderingServer.call_on_render_thread(brush_compositor_effect._create_brush_shape_texture)
+			RenderingServer.call_on_render_thread(brush_compositor_effect.create_brush_shape_texture)
 
 ## The resolution of the brush viewport texture.
 ## Higher resolutions reduce holes in the overlay.

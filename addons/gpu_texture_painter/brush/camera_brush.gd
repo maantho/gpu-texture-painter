@@ -97,12 +97,14 @@ var last_delta: float = 0.0
 var viewport: SubViewport
 var camera: Camera3D
 var brush_compositor_effect: BrushCompositorEffect
-var camera_brush_scene: PackedScene = preload("uid://be0n8acdsbi8p")
 
 const  GROUP_NAME := "camera_brushes"
 
 func _ready() -> void:
 	add_to_group(GROUP_NAME)
+
+	# load camera brush scene
+	var camera_brush_scene: PackedScene = load("uid://be0n8acdsbi8p")
 
 	# setup viewport nodes
 	if not camera_brush_scene:

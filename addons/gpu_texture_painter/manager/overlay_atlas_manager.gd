@@ -29,6 +29,11 @@ var atlas_index: int = 0
 var rd: RenderingDevice
 var atlas_texture_rid: RID = RID()
 
+# File load and save
+@export_file var atlas_texture_path: String = ""
+@export_tool_button("Save atlas to file") var save_action = save_atlas_texture_to_file
+
+
 
 func _ready() -> void:
 	add_to_group(GROUP_NAME)
@@ -96,7 +101,17 @@ func _create_texture() -> void:
 	var view := RDTextureView.new()
 
 	# create texture
-	var image := Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
+	var image: Image
+	if !atlas_texture_path.is_empty():
+		if ResourceLoader.exists(atlas_texture_path):
+			image = Image.load_from_file(atlas_texture_path)
+			if image:
+				image.decompress()
+				image.convert(Image.FORMAT_RGBAF)
+	
+	if !image:
+		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
+
 	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 	# notify brushes
@@ -177,3 +192,34 @@ func _cleanup_texture() -> void:
 			atlas_texture_resource.texture_rd_rid = RID()
 	if atlas_texture_rid.is_valid():
 		rd.free_rid(atlas_texture_rid)
+
+
+func save_atlas_texture_to_file() -> void:
+	if not Engine.is_editor_hint():
+		push_warning("OverlayAtlasManager: Texture saving is only available in the editor.")
+		return
+
+	# check if it was saved before and replace
+	if ResourceLoader.exists(atlas_texture_path):
+			var image := atlas_texture_resource.get_image()
+			image.convert(Image.FORMAT_RGBA8)
+			image.save_webp(atlas_texture_path)
+			return
+
+	# if not save as new file with available index 
+	var path: String = get_tree().edited_scene_root.scene_file_path.get_basename()
+
+	# check existing indicies
+	for i in range(8):
+		var test_path := path + "_overlay_atlas_{0}.webp".format([i])
+
+		# save if with available index
+		if !ResourceLoader.exists(test_path):
+			atlas_texture_path = test_path
+
+			var image := atlas_texture_resource.get_image()
+			image.convert(Image.FORMAT_RGBA8)
+			image.save_webp(atlas_texture_path)
+			return
+
+	push_warning("OverlayAtlasManager: Could not save atlas texture, all indices from 0 to 7 are taken. Please rename or remove existing atlas textures in the project folder.")

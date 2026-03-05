@@ -59,7 +59,7 @@ void main() {
     }
 
     ivec2 brush_shape_coords = ivec2(vec2(framebuffer_coords) / vec2(imageSize(framebuffer)) * vec2(imageSize(brush_shape)));
-    vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_shape, brush_shape_coords).r * params.delta * params.brush_color.a * distance_fade);
+    vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_shape, brush_shape_coords).a * params.delta * params.brush_color.a * distance_fade);
 
 #define PROCESS_TEXTURE(tex) { \
     ivec2 overlay_texture_coords = ivec2(framebuffer_color.xy * vec2(imageSize(tex))); \

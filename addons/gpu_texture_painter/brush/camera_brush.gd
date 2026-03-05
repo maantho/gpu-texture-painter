@@ -59,8 +59,8 @@ extends Node3D
 			min_bleed = max_bleed
 
 ## The shape of the brush used for painting.
-## Channel R is used as brush opacity.
-@export var brush_shape: Texture2D = preload("uid://b6knnm8h3nhpi"):
+## Alpha channel is used as brush opacity.
+@export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
 	set(value):
 		brush_shape = value
 		if brush_compositor_effect:

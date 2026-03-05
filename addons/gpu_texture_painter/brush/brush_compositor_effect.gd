@@ -75,7 +75,8 @@ func create_brush_shape_texture() -> void:
 	print("CameraBrush: Creating brush shape texture")
 
 	# Get image from texture and convert to RGBAF format
-	var image := camera_brush.brush_shape.get_image()
+	var image := camera_brush.brush_shape
+	image.decompress()
 	if image.get_format() != Image.FORMAT_RGBAF:
 		image.convert(Image.FORMAT_RGBAF)
 

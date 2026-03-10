@@ -14,8 +14,6 @@ const  GROUP_NAME := "overlay_atlas_managers"
 		_apply_texture_to_texture_resource()
 		
 @export_storage var atlas_texture_resource: Texture2DRD = null
-
-
 ## Shader used for overlay materials.
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
 
@@ -30,7 +28,7 @@ var rd: RenderingDevice
 var atlas_texture_rid: RID = RID()
 
 # File load and save
-@export_file var atlas_texture_path: String = ""
+@export var atlas_texture_load: Texture2D
 @export_tool_button("Save atlas to file") var save_action = save_atlas_texture_to_file
 
 
@@ -102,12 +100,12 @@ func _create_texture() -> void:
 
 	# create texture
 	var image: Image
-	if !atlas_texture_path.is_empty():
-		if ResourceLoader.exists(atlas_texture_path):
-			image = Image.load_from_file(atlas_texture_path)
-			if image:
-				image.decompress()
-				image.convert(Image.FORMAT_RGBAF)
+
+	if atlas_texture_load:
+		image = atlas_texture_load.get_image()
+		if image:
+			image.decompress()
+			image.convert(Image.FORMAT_RGBAF)
 	
 	if !image:
 		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
@@ -199,27 +197,36 @@ func save_atlas_texture_to_file() -> void:
 		push_warning("OverlayAtlasManager: Texture saving is only available in the editor.")
 		return
 
-	# check if it was saved before and replace
-	if ResourceLoader.exists(atlas_texture_path):
-			var image := atlas_texture_resource.get_image()
-			image.convert(Image.FORMAT_RGBA8)
-			image.save_webp(atlas_texture_path)
+	var image := atlas_texture_resource.get_image()
+	image.convert(Image.FORMAT_RGBA8)
+
+	var save_path: String
+
+	if atlas_texture_load and FileAccess.file_exists(atlas_texture_load.resource_path):
+		save_path = atlas_texture_load.resource_path
+		#DirAccess.remove_absolute(save_path)
+	else:
+		var base_path: String = get_tree().edited_scene_root.scene_file_path.get_basename()
+		var found := false
+		for i in range(8):
+			var test_path := base_path + "_overlay_atlas_{0}.webp".format([i])
+			if !FileAccess.file_exists(test_path):
+				save_path = test_path
+				found = true
+				break
+		if !found:
+			push_warning("OverlayAtlasManager: Could not save atlas texture, all indices from 0 to 7 are taken.")
 			return
 
-	# if not save as new file with available index 
-	var path: String = get_tree().edited_scene_root.scene_file_path.get_basename()
+	# save as lossless webp
+	image.save_webp(save_path)
+	print("OverlayAtlasManager: Saved atlas texture to '{0}'".format([save_path]))
 
-	# check existing indicies
-	for i in range(8):
-		var test_path := path + "_overlay_atlas_{0}.webp".format([i])
+	# reimport the specific file so changes are picked up even on repeated saves
+	EditorInterface.get_resource_filesystem().update_file(save_path)
+	EditorInterface.get_resource_filesystem().reimport_files([save_path])
 
-		# save if with available index
-		if !ResourceLoader.exists(test_path):
-			atlas_texture_path = test_path
+	atlas_texture_load = load(save_path)
 
-			var image := atlas_texture_resource.get_image()
-			image.convert(Image.FORMAT_RGBA8)
-			image.save_webp(atlas_texture_path)
-			return
-
-	push_warning("OverlayAtlasManager: Could not save atlas texture, all indices from 0 to 7 are taken. Please rename or remove existing atlas textures in the project folder.")
+	# mark the scene as modified so the user is prompted to save
+	notify_property_list_changed()

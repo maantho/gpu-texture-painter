@@ -197,7 +197,7 @@ func save_atlas_texture_to_file() -> void:
 		push_warning("OverlayAtlasManager: Texture saving is only available in the editor.")
 		return
 
-	var image := atlas_texture_resource.get_image()
+	var image := Image.create_from_data(atlas_size, atlas_size, false, Image.FORMAT_RGBAF, rd.texture_get_data(atlas_texture_rid, 0))
 	image.convert(Image.FORMAT_RGBA8)
 
 	var save_path: String

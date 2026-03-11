@@ -6,7 +6,7 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout(rgba16f, set = 0, binding = 0) uniform restrict readonly image2D framebuffer;
 
-layout(rgba32f, set = 1, binding = 0) uniform restrict readonly image2D brush_shape;
+layout(rgba8, set = 1, binding = 0) uniform restrict readonly image2D brush_shape;
 
 layout(push_constant, std430) uniform Params {
 	vec4 brush_color;
@@ -17,14 +17,14 @@ layout(push_constant, std430) uniform Params {
     float max_bleed;
 } params;
 
-layout(rgba32f, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;
-layout(rgba32f, set = 2, binding = 1) uniform restrict image2D overlay_texture_1;
-layout(rgba32f, set = 2, binding = 2) uniform restrict image2D overlay_texture_2;
-layout(rgba32f, set = 2, binding = 3) uniform restrict image2D overlay_texture_3;
-layout(rgba32f, set = 2, binding = 4) uniform restrict image2D overlay_texture_4;
-layout(rgba32f, set = 2, binding = 5) uniform restrict image2D overlay_texture_5;
-layout(rgba32f, set = 2, binding = 6) uniform restrict image2D overlay_texture_6;
-layout(rgba32f, set = 2, binding = 7) uniform restrict image2D overlay_texture_7;
+layout(rgba8, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;
+layout(rgba8, set = 2, binding = 1) uniform restrict image2D overlay_texture_1;
+layout(rgba8, set = 2, binding = 2) uniform restrict image2D overlay_texture_2;
+layout(rgba8, set = 2, binding = 3) uniform restrict image2D overlay_texture_3;
+layout(rgba8, set = 2, binding = 4) uniform restrict image2D overlay_texture_4;
+layout(rgba8, set = 2, binding = 5) uniform restrict image2D overlay_texture_5;
+layout(rgba8, set = 2, binding = 6) uniform restrict image2D overlay_texture_6;
+layout(rgba8, set = 2, binding = 7) uniform restrict image2D overlay_texture_7;
 
 
 // The code we want to execute in each invocation

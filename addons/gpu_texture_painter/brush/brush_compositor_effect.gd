@@ -77,14 +77,14 @@ func create_brush_shape_texture() -> void:
 	# Get image from texture and convert to RGBAF format
 	var image := camera_brush.brush_shape
 	image.decompress()
-	if image.get_format() != Image.FORMAT_RGBAF:
-		image.convert(Image.FORMAT_RGBAF)
+	if image.get_format() != Image.FORMAT_RGBA8:
+		image.convert(Image.FORMAT_RGBA8)
 
 	# create texture format
 	var fmt := RDTextureFormat.new()
 	fmt.width = image.get_width()
 	fmt.height = image.get_height()
-	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
 
@@ -114,7 +114,7 @@ func _create_dummy_texture() -> void:
 	var fmt := RDTextureFormat.new()
 	fmt.width = 1
 	fmt.height = 1
-	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
 
@@ -122,7 +122,7 @@ func _create_dummy_texture() -> void:
 	var view := RDTextureView.new()
 
 	# create texture
-	var image := Image.create(1, 1, false, Image.FORMAT_RGBAF)
+	var image := Image.create(1, 1, false, Image.FORMAT_RGBA8)
 	dummy_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 

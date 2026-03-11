@@ -91,7 +91,7 @@ func _create_texture() -> void:
 	var fmt := RDTextureFormat.new()
 	fmt.width = atlas_size
 	fmt.height = atlas_size
-	fmt.format = RenderingDevice.DATA_FORMAT_R32G32B32A32_SFLOAT
+	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
 
@@ -110,11 +110,10 @@ func _create_texture() -> void:
 			if loaded is Image:
 				image = loaded
 			image.decompress()
-			image.convert(Image.FORMAT_RGBAF)
 	
 	#if not loaded create new image
 	if !image:
-		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAF)
+		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBA8)
 
 	# crete texture on RenderingDevice
 	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
@@ -205,8 +204,7 @@ func save_atlas_texture_to_file() -> void:
 		return
 
 	# get image form RenderingDevice
-	var image := Image.create_from_data(atlas_size, atlas_size, false, Image.FORMAT_RGBAF, rd.texture_get_data(atlas_texture_rid, 0))
-	image.convert(Image.FORMAT_RGBA8)
+	var image := Image.create_from_data(atlas_size, atlas_size, false, Image.FORMAT_RGBA8, rd.texture_get_data(atlas_texture_rid, 0))
 
 	# if no path is set, search for best option
 	if atlas_texture_path.is_empty() or !FileAccess.file_exists(atlas_texture_path):

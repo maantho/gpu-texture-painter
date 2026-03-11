@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://bfixaydya7moo"
+path="res://.godot/imported/smooth_brush_shape.webp-67c24ae8e81b24435d30c0fc38df5003.image"
+
+[deps]
+
+source_file="res://addons/gpu_texture_painter/brush_shapes/smooth_brush_shape.webp"
+dest_files=["res://.godot/imported/smooth_brush_shape.webp-67c24ae8e81b24435d30c0fc38df5003.image"]
+
+[params]
+

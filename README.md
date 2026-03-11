@@ -59,7 +59,7 @@ For an example configuration open the [demo scene](addons/gpu_texture_painter/de
 - **Max Distance**: The range of the brush. (Affects performance)
 - **Start Distance Fade**: At which distance the brush should start to fade to full transparency.
 - **Bleed**: How many texels should be drawn in the atlas around the texels rendered by the CameraBrush. Increase to reduce artifacts. (Affects performance)
-- **Brush Shape**: Image of the brush shape. The alpha channel dictates how much paint is applied. Must be imported as Image.
+- **Brush Shape**: Image of the brush shape. Must be imported as Image.
 - **Resolution**: Resolution of the CameraBrush render target. Increase or decrease until holes in the painting disappear. (Affects performance)
 - **Color**: Color of the brush. Opacity can be set.
 - **Draw Speed**: The rate at which the paint is applied.

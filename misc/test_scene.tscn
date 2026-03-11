@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://gf5fmdn7810t"]
+[gd_scene format=3 uid="uid://gf5fmdn7810t"]
 
 [ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="1_u3cau"]
 [ext_resource type="Shader" uid="uid://qow53ph8eivf" path="res://addons/gpu_texture_painter/overlay_shaders/default_overlay.gdshader" id="2_fgal4"]
 [ext_resource type="Script" uid="uid://nplvtv2bi7u0" path="res://addons/gpu_texture_painter/manager/overlay_atlas_manager.gd" id="3_egkiw"]
 [ext_resource type="Script" path="res://misc/camera_3d.gd" id="3_fgal4"]
+[ext_resource type="Image" uid="uid://bfixaydya7moo" path="res://addons/gpu_texture_painter/brush_shapes/smooth_brush_shape.webp" id="5_egkiw"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_fgal4"]
 
@@ -83,74 +84,75 @@ sky = SubResource("Sky_egkiw")
 tonemap_mode = 2
 glow_enabled = true
 
-[node name="Node3D" type="Node3D"]
+[node name="Node3D" type="Node3D" unique_id=1922899082]
 
-[node name="Node3D2" type="Node3D" parent="."]
+[node name="Node3D2" type="Node3D" parent="." unique_id=149387997]
 transform = Transform3D(-0.010892795, -0.985823, -0.16743489, 0.81173, -0.10649976, 0.5742405, -0.5839312, -0.12965685, 0.80138224, 0.6770854, 4.574624, 5.309184)
 
-[node name="OverlayAtlasManager" type="Node3D" parent="Node3D2"]
+[node name="OverlayAtlasManager" type="Node3D" parent="Node3D2" unique_id=736578628]
 transform = Transform3D(0.7269731, 0.4934929, 0.47746724, -0.63188815, 0.20863482, 0.74645096, 0.2687519, -0.84435564, 0.46350408, 0, 0, 0)
 script = ExtResource("3_egkiw")
 atlas_size = 2048
 atlas_texture_resource = SubResource("Texture2DRD_fgal4")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
-[node name="MeshInstance3D-Wall" type="MeshInstance3D" parent="Node3D2"]
+[node name="MeshInstance3D-Wall" type="MeshInstance3D" parent="Node3D2" unique_id=597092091]
 transform = Transform3D(-0.010892807, 0.8117301, -0.58393127, -0.985823, -0.10649974, -0.12965684, -0.1674349, 0.57424045, 0.8013822, -0.6057866, 1.8430547, -6.768251)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_egkiw")
 mesh = SubResource("PlaneMesh_6u4pm")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D-Wall2" type="MeshInstance3D" parent="Node3D2"]
+[node name="MeshInstance3D-Wall2" type="MeshInstance3D" parent="Node3D2" unique_id=2030986871]
 transform = Transform3D(-0.010892807, -0.5839313, -0.81173, -0.985823, -0.12965685, 0.106499754, -0.1674349, 0.8013823, -0.5742405, 6.372521, 1.9588401, -7.9039598)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_46f6r")
 mesh = SubResource("PlaneMesh_46f6r")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D-Wall3" type="MeshInstance3D" parent="Node3D2"]
+[node name="MeshInstance3D-Wall3" type="MeshInstance3D" parent="Node3D2" unique_id=1842768195]
 transform = Transform3D(-0.81173027, -0.010892802, -0.58393127, 0.10649976, -0.9858231, -0.12965684, -0.57424057, -0.16743492, 0.8013822, 3.5073276, 6.239671, -3.0598738)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_hc0wr")
 mesh = SubResource("PlaneMesh_rwn7v")
 skeleton = NodePath("../..")
 
-[node name="Node3D" type="Node3D" parent="."]
+[node name="Node3D" type="Node3D" parent="." unique_id=1458597136]
 
-[node name="OverlayAtlasManager" type="Node3D" parent="Node3D"]
+[node name="OverlayAtlasManager" type="Node3D" parent="Node3D" unique_id=340798240]
 script = ExtResource("3_egkiw")
 atlas_texture_resource = SubResource("Texture2DRD_hc0wr")
 metadata/_custom_type_script = "uid://nplvtv2bi7u0"
 
-[node name="MeshInstance3D-Torus" type="MeshInstance3D" parent="Node3D"]
+[node name="MeshInstance3D-Torus" type="MeshInstance3D" parent="Node3D" unique_id=1901901376]
 transform = Transform3D(0.92951924, 0.23966563, 0.28027546, 0.099282086, 0.56932324, -0.81609654, -0.35515767, 0.78640383, 0.50540245, -1.1133957, 3.895925, 1.6251593)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_rwn7v")
 mesh = SubResource("TorusMesh_12qr2")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D-Cube" type="MeshInstance3D" parent="Node3D"]
+[node name="MeshInstance3D-Cube" type="MeshInstance3D" parent="Node3D" unique_id=266382558]
 transform = Transform3D(0.63123596, -0.040080052, -0.77455443, -0.12548004, 0.9802298, -0.1529849, 0.765373, 0.19376063, 0.61372703, -1.8328917, 3.6124735, -2.322279)
 layers = 1048577
 material_overlay = SubResource("ShaderMaterial_ja42n")
 mesh = SubResource("BoxMesh_h5ody")
 skeleton = NodePath("../..")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=231463991]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6224786, 5.811692, 3.5546737)
 script = ExtResource("3_fgal4")
 
-[node name="CameraBrush" type="Node3D" parent="Camera3D"]
+[node name="CameraBrush" type="Node3D" parent="Camera3D" unique_id=556357845]
 script = ExtResource("1_u3cau")
 fov = 20.0
+brush_shape = ExtResource("5_egkiw")
 resolution = Vector2i(512, 512)
 color = Color(1, 0.64685506, 0, 1)
 drawing = true
 metadata/_custom_type_script = "uid://bq5yvj1llh63a"
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1543081912]
 transform = Transform3D(0.71325046, -0.53504366, 0.45277154, 0, 0.64597744, 0.7633565, -0.70090926, -0.54446435, 0.46074373, 0, 7.568096, 0)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1502731577]
 environment = SubResource("Environment_46f6r")

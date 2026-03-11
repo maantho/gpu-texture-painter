@@ -9,6 +9,7 @@ var shader: RID
 var pipeline: RID
 
 var dummy_texture_rid: RID
+var brush_shape_sampler_rid: RID
 
 # can change
 var brush_shape_texture_rid: RID
@@ -22,6 +23,7 @@ func _init() -> void:
 	rd = RenderingServer.get_rendering_device()
 	RenderingServer.call_on_render_thread(_initialize_compute)
 	RenderingServer.call_on_render_thread(_create_dummy_texture)
+	RenderingServer.call_on_render_thread(_create_brush_shape_sampler)
 
 
 # System notifications, we want to react on the notification that
@@ -35,6 +37,10 @@ func _notification(what: int) -> void:
 		if brush_shape_texture_rid.is_valid():
 			rd.free_rid(brush_shape_texture_rid)
 			brush_shape_texture_rid = RID()
+
+		if brush_shape_sampler_rid.is_valid():
+			rd.free_rid(brush_shape_sampler_rid)
+			brush_shape_sampler_rid = RID()
 
 		if dummy_texture_rid.is_valid():
 			rd.free_rid(dummy_texture_rid)
@@ -86,18 +92,22 @@ func create_brush_shape_texture() -> void:
 	fmt.height = image.get_height()
 	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
+	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT
 
 	# create texture view
 	var view := RDTextureView.new()
 
-	# create texture with storage bit for image2D access
+	# create texture for sampler2D access
 	brush_shape_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
+
+	if not brush_shape_sampler_rid.is_valid():
+		_create_brush_shape_sampler()
 
 	# create uniform
 	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE
 	uniform.binding = 0
+	uniform.add_id(brush_shape_sampler_rid)
 	uniform.add_id(brush_shape_texture_rid)
 
 	brush_shape_uniform_set = rd.uniform_set_create([uniform], shader, 1)
@@ -124,6 +134,22 @@ func _create_dummy_texture() -> void:
 	# create texture
 	var image := Image.create(1, 1, false, Image.FORMAT_RGBA8)
 	dummy_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
+
+
+func _create_brush_shape_sampler() -> void:
+	if not rd:
+		return
+
+	if brush_shape_sampler_rid.is_valid():
+		rd.free_rid(brush_shape_sampler_rid)
+		brush_shape_sampler_rid = RID()
+
+	var sampler_state := RDSamplerState.new()
+	sampler_state.min_filter = RenderingDevice.SAMPLER_FILTER_LINEAR
+	sampler_state.mag_filter = RenderingDevice.SAMPLER_FILTER_LINEAR
+	sampler_state.repeat_u = RenderingDevice.SAMPLER_REPEAT_MODE_CLAMP_TO_EDGE
+	sampler_state.repeat_v = RenderingDevice.SAMPLER_REPEAT_MODE_CLAMP_TO_EDGE
+	brush_shape_sampler_rid = rd.sampler_create(sampler_state)
 
 
 func get_atlas_textures(all_managers: Array[Node]) -> void:

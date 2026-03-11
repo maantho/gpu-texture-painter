@@ -6,7 +6,7 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout(rgba16f, set = 0, binding = 0) uniform restrict readonly image2D framebuffer;
 
-layout(rgba8, set = 1, binding = 0) uniform restrict readonly image2D brush_shape;
+layout(set = 1, binding = 0) uniform sampler2D brush_shape;
 
 layout(push_constant, std430) uniform Params {
 	vec4 brush_color;
@@ -58,8 +58,9 @@ void main() {
         bleed = int(mix(params.min_bleed, params.max_bleed, distance_value));
     }
 
-    ivec2 brush_shape_coords = ivec2(vec2(framebuffer_coords) / vec2(imageSize(framebuffer)) * vec2(imageSize(brush_shape)));
-    vec4 brush_color = vec4(params.brush_color.rgb, imageLoad(brush_shape, brush_shape_coords).a * params.delta * params.brush_color.a * distance_fade);
+    vec2 brush_shape_uv = (vec2(framebuffer_coords) + vec2(0.5f)) / vec2(imageSize(framebuffer));
+    vec4 brush_shape_color = texture(brush_shape, brush_shape_uv);
+    vec4 brush_color = vec4(params.brush_color.rgb * brush_shape_color.rgb, brush_shape_color.a * params.delta * params.brush_color.a * distance_fade);
 
 #define PROCESS_TEXTURE(tex) { \
     ivec2 overlay_texture_coords = ivec2(framebuffer_color.xy * vec2(imageSize(tex))); \

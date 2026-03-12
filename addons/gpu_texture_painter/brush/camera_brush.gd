@@ -60,7 +60,7 @@ extends Node3D
 
 ## The shape of the brush used for painting.
 ## Alpha channel is used as brush opacity.
-@export var brush_shape: Image = preload("uid://b6knnm8h3nhpi"):
+@export var brush_shape: Image = preload("uid://bfixaydya7moo"):
 	set(value):
 		brush_shape = value
 		if brush_compositor_effect:
@@ -98,7 +98,7 @@ var viewport: SubViewport
 var camera: Camera3D
 var brush_compositor_effect: BrushCompositorEffect
 
-const  GROUP_NAME := "camera_brushes"
+const GROUP_NAME := "camera_brushes"
 
 func _ready() -> void:
 	add_to_group(GROUP_NAME)
@@ -166,6 +166,12 @@ func _validate_property(property: Dictionary) -> void:
 	if property.name == "projection":
 		property.hint_string = "Perspective,Orthogonal"
 
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DISABLED:
+		viewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_DISABLED
+	elif what == NOTIFICATION_ENABLED:
+		viewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ALWAYS if drawing else SubViewport.UpdateMode.UPDATE_DISABLED
 
 func get_atlas_textures() -> void:
 	var all_managers := get_tree().get_nodes_in_group(OverlayAtlasManager.GROUP_NAME)

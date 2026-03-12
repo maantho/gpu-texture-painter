@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://ykobo4v8o4kg"]
+
+[ext_resource type="Script" uid="uid://cbtmpn2paflvf" path="res://addons/gpu_texture_painter/editor_menu/overlay_atlas_menu.gd" id="1_f5dqy"]
+[ext_resource type="Script" uid="uid://bq5yvj1llh63a" path="res://addons/gpu_texture_painter/brush/camera_brush.gd" id="1_m35ky"]
+
+[node name="OverlayAtlasMenu" type="HBoxContainer" unique_id=1648053802]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f5dqy")
+
+[node name="CheckButton" type="CheckButton" parent="." unique_id=379062341]
+layout_mode = 2
+text = "Drawing"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="." unique_id=982123078]
+layout_mode = 2
+text = "Color"
+flat = true
+
+[node name="HSlider" type="HSlider" parent="." unique_id=909246254]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+min_value = 0.1
+max_value = 20.0
+step = 0.1
+value = 0.1
+
+[node name="CameraBrush" type="Node3D" parent="." unique_id=321388696]
+script = ExtResource("1_m35ky")
+projection = 1
+size = 0.1
+resolution = Vector2i(2048, 2048)
+color = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://bq5yvj1llh63a"
+
+[connection signal="toggled" from="CheckButton" to="." method="_on_check_button_toggled"]
+[connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
+[connection signal="drag_ended" from="HSlider" to="." method="_on_h_slider_drag_ended"]

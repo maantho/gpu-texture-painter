@@ -40,9 +40,12 @@ For an example configuration open the [demo scene](demo/demo_scene.tscn)
     - All meshes need to have the UV2 unwrapped as described [here](https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/using_lightmap_gi.html#setting-up).
 - Set the wanted texture size.
 - Set the shader file used for the overlay material. See [Appearance of the Overlay](#overlay-atlas-creation).
-- Press **"Generate atlas and apply shader"** to generate the atlas packing and apply the overlay shader material to all materials.
+- Press **Apply** to generate the atlas packing and apply the overlay shader material to all materials.
 - Alternatively, call the **apply()** method in a script.
 - Alternatively, select **Apply on ready**. Useful for MeshInstance3Ds inside PackedScenes.
+- You can save the current atlas texture to file by pressing **Save atlas to file**. It selects an available path or overrides the file at the given path.
+- The texture at **Atlas Texture Path** is loaded at ready and apply.
+- When an **OverlayAtlasManager** is selected, controls for in editor drawing show in the spatial editor menu at the top.
 
 ### Camera Brush
 

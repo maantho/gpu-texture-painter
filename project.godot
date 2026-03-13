@@ -14,3 +14,7 @@ config/name="GPU Texture Painter"
 run/main_scene="uid://gf5fmdn7810t"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://images/Icon.png"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gpu_texture_painter/plugin.cfg")

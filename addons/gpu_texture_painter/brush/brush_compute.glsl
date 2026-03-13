@@ -17,14 +17,14 @@ layout(push_constant, std430) uniform Params {
     float max_bleed;
 } params;
 
-layout(rgba8, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;
-layout(rgba8, set = 2, binding = 1) uniform restrict image2D overlay_texture_1;
-layout(rgba8, set = 2, binding = 2) uniform restrict image2D overlay_texture_2;
-layout(rgba8, set = 2, binding = 3) uniform restrict image2D overlay_texture_3;
-layout(rgba8, set = 2, binding = 4) uniform restrict image2D overlay_texture_4;
-layout(rgba8, set = 2, binding = 5) uniform restrict image2D overlay_texture_5;
-layout(rgba8, set = 2, binding = 6) uniform restrict image2D overlay_texture_6;
-layout(rgba8, set = 2, binding = 7) uniform restrict image2D overlay_texture_7;
+layout(rgba16f, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;
+layout(rgba16f, set = 2, binding = 1) uniform restrict image2D overlay_texture_1;
+layout(rgba16f, set = 2, binding = 2) uniform restrict image2D overlay_texture_2;
+layout(rgba16f, set = 2, binding = 3) uniform restrict image2D overlay_texture_3;
+layout(rgba16f, set = 2, binding = 4) uniform restrict image2D overlay_texture_4;
+layout(rgba16f, set = 2, binding = 5) uniform restrict image2D overlay_texture_5;
+layout(rgba16f, set = 2, binding = 6) uniform restrict image2D overlay_texture_6;
+layout(rgba16f, set = 2, binding = 7) uniform restrict image2D overlay_texture_7;
 
 
 // The code we want to execute in each invocation

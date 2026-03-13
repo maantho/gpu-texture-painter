@@ -124,7 +124,7 @@ func _create_dummy_texture() -> void:
 	var fmt := RDTextureFormat.new()
 	fmt.width = 1
 	fmt.height = 1
-	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
+	fmt.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
 
@@ -132,7 +132,7 @@ func _create_dummy_texture() -> void:
 	var view := RDTextureView.new()
 
 	# create texture
-	var image := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+	var image := Image.create(1, 1, false, Image.FORMAT_RGBAH)
 	dummy_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
 
 

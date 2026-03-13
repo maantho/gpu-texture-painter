@@ -91,7 +91,7 @@ func _create_texture() -> void:
 	var fmt := RDTextureFormat.new()
 	fmt.width = atlas_size
 	fmt.height = atlas_size
-	fmt.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
+	fmt.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
 	fmt.texture_type = RenderingDevice.TEXTURE_TYPE_2D
 	fmt.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT + RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
 
@@ -110,10 +110,12 @@ func _create_texture() -> void:
 			if loaded is Image:
 				image = loaded
 			image.decompress()
+			if image.get_format() != Image.FORMAT_RGBAH:
+				image.convert(Image.FORMAT_RGBAH)
 	
 	#if not loaded create new image
 	if !image:
-		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBA8)
+		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAH)
 
 	# crete texture on RenderingDevice
 	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
@@ -204,7 +206,7 @@ func save_atlas_texture_to_file() -> void:
 		return
 
 	# get image form RenderingDevice
-	var image := Image.create_from_data(atlas_size, atlas_size, false, Image.FORMAT_RGBA8, rd.texture_get_data(atlas_texture_rid, 0))
+	var image := Image.create_from_data(atlas_size, atlas_size, false, Image.FORMAT_RGBAH, rd.texture_get_data(atlas_texture_rid, 0))
 
 	# if no path is set, search for best option
 	if atlas_texture_path.is_empty() or !FileAccess.file_exists(atlas_texture_path):
@@ -212,7 +214,7 @@ func save_atlas_texture_to_file() -> void:
 		var found := false
 		# try paths until available one is found
 		for i in range(50):
-			var test_path := base_path + "_overlay_atlas_{0}.webp".format([i])
+			var test_path := base_path + "_overlay_atlas_{0}.exr".format([i])
 			if !FileAccess.file_exists(test_path):
 				atlas_texture_path = test_path
 				found = true
@@ -221,8 +223,8 @@ func save_atlas_texture_to_file() -> void:
 			push_warning("OverlayAtlasManager: Could not save atlas texture, already 50 atlases where found belinging to this scene.")
 			return
 
-	# save as lossless webp
-	image.save_webp(atlas_texture_path)
+	# save as exr
+	image.save_exr(atlas_texture_path)
 	print("OverlayAtlasManager: Saved atlas texture to '{0}'".format([atlas_texture_path]))
 
 	# reimport the specific file so changes are picked in the Editor

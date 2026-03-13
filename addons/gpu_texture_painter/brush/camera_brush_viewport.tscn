@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://be0n8acdsbi8p"]
+[gd_scene format=3 uid="uid://be0n8acdsbi8p"]
 
 [ext_resource type="Script" uid="uid://dfo6wiospuic0" path="res://addons/gpu_texture_painter/brush/brush_compositor_effect.gd" id="1_auvwn"]
 
@@ -7,7 +7,7 @@ ambient_light_source = 1
 reflected_light_source = 1
 
 [sub_resource type="CompositorEffect" id="CompositorEffect_e8678"]
-resource_local_to_scene = false
+resource_local_to_scene = true
 resource_name = ""
 enabled = true
 effect_callback_type = 4
@@ -17,9 +17,10 @@ script = ExtResource("1_auvwn")
 metadata/_custom_type_script = "uid://dfo6wiospuic0"
 
 [sub_resource type="Compositor" id="Compositor_5jtd2"]
+resource_local_to_scene = true
 compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_e8678")])
 
-[node name="CameraBrushViewport" type="SubViewport"]
+[node name="CameraBrushViewport" type="SubViewport" unique_id=557346565]
 transparent_bg = true
 use_hdr_2d = true
 anisotropic_filtering_level = 0
@@ -27,7 +28,7 @@ canvas_item_default_texture_filter = 0
 positional_shadow_atlas_size = 0
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=330754168]
 environment = SubResource("Environment_2vbdc")
 compositor = SubResource("Compositor_5jtd2")
 near = 0.01

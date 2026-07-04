@@ -15,6 +15,9 @@ layout(push_constant, std430) uniform Params {
     float start_distance_fade;
     float min_bleed;
     float max_bleed;
+    float pad1;
+    float pad2;
+    float pad3;
 } params;
 
 layout(rgba16f, set = 2, binding = 0) uniform restrict image2D overlay_texture_0;

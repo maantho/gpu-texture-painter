@@ -213,19 +213,20 @@ func _render_callback(p_effect_callback_type: EffectCallbackType, p_render_data:
 
 		# prepare push constant
 		var linear_color := camera_brush.color.srgb_to_linear()
-		var push_constant : PackedFloat32Array = PackedFloat32Array()
-		push_constant.push_back(linear_color.r)
-		push_constant.push_back(linear_color.g)
-		push_constant.push_back(linear_color.b)
-		push_constant.push_back(linear_color.a)
-		push_constant.push_back(camera_brush.last_delta * camera_brush.draw_speed)
-		push_constant.push_back(camera_brush.max_distance)
-		push_constant.push_back(camera_brush.start_distance_fade)
-		push_constant.push_back(float(camera_brush.min_bleed))
-		push_constant.push_back(float(camera_brush.max_bleed))
-		push_constant.push_back(0.0)
-		push_constant.push_back(0.0)
-		push_constant.push_back(0.0)
+		var push_constant : PackedFloat32Array = PackedFloat32Array([
+			linear_color.r,
+			linear_color.g,
+			linear_color.b,
+			linear_color.a,
+			camera_brush.last_delta * camera_brush.draw_speed,
+			camera_brush.max_distance,
+			camera_brush.start_distance_fade,
+			float(camera_brush.min_bleed),
+			float(camera_brush.max_bleed),
+			float(0),
+			float(0),
+			float(0)
+		])
 
 
 		# Get the RID for our color image, we will be reading from and writing to it.

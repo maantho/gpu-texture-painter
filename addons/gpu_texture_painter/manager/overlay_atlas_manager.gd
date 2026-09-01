@@ -12,7 +12,7 @@ const  GROUP_NAME := "overlay_atlas_managers"
 		atlas_size = clampi(value, 1, 1024 * 4)
 		RenderingServer.call_on_render_thread(_create_texture)
 		_apply_texture_to_texture_resource()
-		
+
 @export_storage var atlas_texture_resource: Texture2DRD = null
 ## Shader used for overlay materials.
 @export var overlay_shader: Shader = preload("uid://qow53ph8eivf")
@@ -38,7 +38,7 @@ func _ready() -> void:
 	_get_atlas_index()
 
 	rd = RenderingServer.get_rendering_device()
-	
+
 	if apply_on_ready:
 		# create everything from scratch
 		apply()
@@ -64,7 +64,7 @@ func _get_atlas_index() -> void:
 		var possible_index: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7]
 
 		var all_managers := get_tree().get_nodes_in_group(GROUP_NAME)
-		
+
 		if all_managers.is_empty():
 			return
 
@@ -72,11 +72,11 @@ func _get_atlas_index() -> void:
 			if manager == null or manager == self:
 				continue
 			possible_index.erase(manager.atlas_index)
-		
+
 		if possible_index.is_empty():
 			push_error("OverlayAtlasManager: No available atlas indices left! Maximum of 8 overlay atlases reached.")
 			return
-		
+
 		atlas_index = possible_index[0]
 		print("OverlayAtlasManager: Assigned atlas index {0}".format([atlas_index]))
 
@@ -112,13 +112,13 @@ func _create_texture() -> void:
 			image.decompress()
 			if image.get_format() != Image.FORMAT_RGBAH:
 				image.convert(Image.FORMAT_RGBAH)
-	
+
 	#if not loaded create new image
 	if !image:
 		image = Image.create(atlas_size, atlas_size, false, Image.FORMAT_RGBAH)
 
 	# crete texture on RenderingDevice
-	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()]) 
+	atlas_texture_rid = rd.texture_create(fmt, view, [image.get_data()])
 
 	# notify brushes
 	get_tree().call_group(CameraBrush.GROUP_NAME, "get_atlas_textures")
@@ -132,7 +132,7 @@ func _apply_texture_to_texture_resource() -> void:
 	#create Texture2DRD
 	if not atlas_texture_resource:
 		_create_texture_resource()
-	
+
 	atlas_texture_resource.texture_rd_rid = atlas_texture_rid  # handles cleanup of old RID
 	notify_property_list_changed()
 
@@ -153,7 +153,7 @@ func _construct_atlas_and_apply_materials() -> void:
 				push_warning("MeshInstance3D '{0}' has no lightmap size hint set, skipping overlay material application.".format([mesh_instance.name]))
 			else:
 				rects.push_back(Vector2(mesh_instance.mesh.lightmap_size_hint))
-	
+
 	rects.reverse()
 
 	var packed_rects: Array[Rect2] = MaxRectsPacker.pack_into_square(rects)
@@ -171,14 +171,14 @@ func _construct_atlas_and_apply_materials() -> void:
 		mesh_instance.material_overlay.set_shader_parameter("size_in_atlas", packed_rects[i].size)
 		mesh_instance.material_overlay.set_shader_parameter("atlas_index", atlas_index)
 		mesh_instance.layers |= 1 << 20  # enable overlay layer 21
-	
+
 	print("OverlayAtlasManager: Applied overlay materials to mesh instances")
 
 
 func _get_self_and_child_mesh_instances(node: Node, children_acc: Array[MeshInstance3D] = []) -> Array[MeshInstance3D]:
 	if node is MeshInstance3D:
 		children_acc.push_back(node)
-		
+
 	for child in node.get_children():
 		children_acc = _get_self_and_child_mesh_instances(child, children_acc)
 
@@ -227,9 +227,11 @@ func save_atlas_texture_to_file() -> void:
 	image.save_exr(atlas_texture_path)
 	print("OverlayAtlasManager: Saved atlas texture to '{0}'".format([atlas_texture_path]))
 
-	# reimport the specific file so changes are picked in the Editor
-	EditorInterface.get_resource_filesystem().update_file(atlas_texture_path)
-	EditorInterface.get_resource_filesystem().reimport_files([atlas_texture_path])
+	# get the editor interface via string to fix issue on export
+	var editor_interface = Engine.get_singleton("EditorInterface")
+	editor_interface.get_resource_filesystem().update_file(atlas_texture_path)
+	editor_interface.get_resource_filesystem().reimport_files([atlas_texture_path])
 
 	# mark scene as modified, does not work correctly :(
 	notify_property_list_changed()
+	editor_interface.mark_scene_as_unsaved()
